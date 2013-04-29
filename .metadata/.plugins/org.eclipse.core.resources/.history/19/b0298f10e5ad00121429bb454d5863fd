@@ -1,0 +1,5 @@
+package at.ac.uibk.cs.auis.ImageBasedVisualServoing.Common;
+
+public static class DrawHelper {
+
+}

@@ -1,0 +1,14 @@
+package at.ac.uibk.cs.auis.ImageBasedVisualServoing.Common;
+
+import static org.junit.Assert.*;
+
+import org.junit.Test;
+
+public class CalibrationHelperTest {
+
+	@Test
+	public void testGetHomogenousMat() {
+		fail("Not yet implemented");
+	}
+
+}

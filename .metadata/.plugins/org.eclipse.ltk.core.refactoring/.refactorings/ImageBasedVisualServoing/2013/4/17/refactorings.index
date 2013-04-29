@@ -1,0 +1,9 @@
+1366913094200	Delete elements
+1366913292045	Delete element
+1366916738016	Rename method 'findLargenstContour'
+1366918208802	Rename field 'contour'
+1366918389398	Rename method 'getBoundingRect'
+1366918399188	Rename field 'boundingRect'
+1366920546229	Rename local variable 'centerOfMass'
+1366920612217	Rename local variable 'lowestPoint'
+1367180870246	Rename type 'InRoTestActivity'

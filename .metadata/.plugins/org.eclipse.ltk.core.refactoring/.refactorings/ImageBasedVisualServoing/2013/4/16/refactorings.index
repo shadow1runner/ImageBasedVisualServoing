@@ -1,0 +1,21 @@
+1366363140764	Move compilation units
+1366363163772	Rename package 'at.ac.uibk.cs.auis'
+1366363176038	Rename type 'ColorBasedTrackingActivity'
+1366364549749	Rename type 'ImageBasedVisualServoingActivity'
+1366403858716	Copy compilation unit
+1366405439054	Rename type 'PointHelper'
+1366483089704	Rename field 'trackingColorSet'
+1366529448379	Rename resource 'color_based_tracking_surface_view.xml'
+1366530974205	Rename field 'mCalibrationButtonOk'
+1366532101469	Rename field 'points'
+1366532364158	Copy file
+1366533454383	Copy compilation unit
+1366536111680	Rename type 'PacelablePoint'
+1366536117637	Rename type 'ParelablePoint'
+1366545963950	Rename method 'createSummary'
+1366556701654	Move compilation units
+1366556888961	Rename field 'pointHelper'
+1366556985854	Copy file
+1366557124151	Rename resource 'imageBasedVisualServoing_view.xml'
+1366557208923	Move compilation units
+1366576524012	Rename field '_cachedHom'

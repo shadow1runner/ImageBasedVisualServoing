@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+	<string name="hello">Hello World, InRoTestActivity!</string>
+	<string name="app_name">InRoTest</string>
+	<string name="b0">0</string>
+	<string name="b1">1</string>
+	<string name="b2">2</string>
+	<string name="b3">3</string>
+	<string name="b4">4</string>
+	<string name="red">Red</string>
+	<string name="blue">Blau</string>
+	<string name="sensors">Sensors (Bumper - Voltage - Distance)</string>
+	<string name="motor">Motors (Reference / Current)</string>
+	<string name="led">Led</string>
+	<string name="position">Position (x - y - alpha in mm)</string>
+	<string name="debug">Debug</string>
+	<string name="acc">Toggle ACC</string>
+	<string name="quit">Quit</string>
+	<string name="debugmenu">Debug</string>
+	<string name="band">Band</string>
+	<string name="optional">Optional</string>
+	<string name="options">Options</string>
+	<string name="lint">Int</string>
+	<string name="tint">Toggle INT</string>
+	<string name="tmoff">Toggle Motor Off</string>
+	<string name="rethome">Return Home</string>
+	<string name="turn180">Turn180</string>
+	<string name="right45">Turn Right 45°</string>
+	<string name="left45">Turn Left 45°</string>
+	<string name="forward1">Forward 1m</string>
+	<string name="back1">Backward 1m</string>
+
+</resources>
