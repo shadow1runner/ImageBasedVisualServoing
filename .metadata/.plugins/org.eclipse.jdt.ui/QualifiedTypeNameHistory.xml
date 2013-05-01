@@ -1,19 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <qualifiedTypeNameHistroy>
-<fullyQualifiedTypeName name="android.app.AlertDialog"/>
-<fullyQualifiedTypeName name="android.content.DialogInterface.OnClickListener"/>
-<fullyQualifiedTypeName name="at.ac.uibk.cs.auis.ImageBasedVisualServoing.PointHelper"/>
-<fullyQualifiedTypeName name="android.widget.Button"/>
-<fullyQualifiedTypeName name="at.ac.uibk.cs.auis.ImageBasedVisualServoing.R.id"/>
-<fullyQualifiedTypeName name="java.lang.Runnable"/>
-<fullyQualifiedTypeName name="at.ac.uibk.cs.auis.ImageBasedVisualServoing.R.string"/>
-<fullyQualifiedTypeName name="sun.security.acl.WorldGroupImpl"/>
-<fullyQualifiedTypeName name="at.ac.uibk.cs.auis.ImageBasedVisualServoing.CalibrationHelper"/>
-<fullyQualifiedTypeName name="android.graphics.Point"/>
-<fullyQualifiedTypeName name="at.ac.uibk.cs.auis.ImageBasedVisualServoing.PacelablePoint"/>
-<fullyQualifiedTypeName name="java.lang.IllegalStateException"/>
-<fullyQualifiedTypeName name="android.widget.GridView"/>
-<fullyQualifiedTypeName name="android.widget.ArrayAdapter"/>
 <fullyQualifiedTypeName name="java.util.List"/>
 <fullyQualifiedTypeName name="android.content.Intent"/>
 <fullyQualifiedTypeName name="at.ac.uibk.cs.auis.ImageBasedVisualServoing.CalibrationActivity"/>
@@ -45,9 +31,6 @@
 <fullyQualifiedTypeName name="org.opencv.core.Scalar"/>
 <fullyQualifiedTypeName name="at.ac.uibk.cs.auis.ImageBasedVisualServoing.Common.DrawHelper"/>
 <fullyQualifiedTypeName name="org.opencv.imgproc.Imgproc"/>
-<fullyQualifiedTypeName name="ioio.lib.util.android.IOIOActivity"/>
-<fullyQualifiedTypeName name="android.os.Handler"/>
-<fullyQualifiedTypeName name="android.os.Message"/>
 <fullyQualifiedTypeName name="org.opencv.core.Size"/>
 <fullyQualifiedTypeName name="org.opencv.core.TermCriteria"/>
 <fullyQualifiedTypeName name="android.widget.LinearLayout"/>
@@ -60,4 +43,21 @@
 <fullyQualifiedTypeName name="at.ac.uibk.cs.auis.ImageBasedVisualServoing.Calibration.CalibrationChessboardActivity"/>
 <fullyQualifiedTypeName name="org.opencv.core.Point"/>
 <fullyQualifiedTypeName name="at.ac.uibk.cs.auis.ImageBasedVisualServoing.Common.ParcelablePoint"/>
+<fullyQualifiedTypeName name="ioio.lib.util.android.IOIOActivity"/>
+<fullyQualifiedTypeName name="ioio.lib.util.BaseIOIOLooper"/>
+<fullyQualifiedTypeName name="ioio.lib.api.exception.ConnectionLostException"/>
+<fullyQualifiedTypeName name="android.os.Looper"/>
+<fullyQualifiedTypeName name="at.ac.uibk.cs.auis.ImageBasedVisualServoing.Robot.Looper"/>
+<fullyQualifiedTypeName name="ioio.lib.api.DigitalOutput"/>
+<fullyQualifiedTypeName name="ioio.lib.api.PwmOutput"/>
+<fullyQualifiedTypeName name="ioio.lib.api.DigitalInput"/>
+<fullyQualifiedTypeName name="ioio.lib.api.TwiMaster"/>
+<fullyQualifiedTypeName name="android.util.Log"/>
+<fullyQualifiedTypeName name="android.os.Handler"/>
+<fullyQualifiedTypeName name="android.os.Message"/>
+<fullyQualifiedTypeName name="at.ac.uibk.cs.auis.ImageBasedVisualServoing.Robot.Robot.FsmStates"/>
+<fullyQualifiedTypeName name="at.ac.uibk.cs.auis.ImageBasedVisualServoing.Robot.Robot"/>
+<fullyQualifiedTypeName name="at.ac.uibk.cs.auis.ImageBasedVisualServoing.Robot.RobotPosition"/>
+<fullyQualifiedTypeName name="java.lang.IllegalStateException"/>
+<fullyQualifiedTypeName name="at.ac.uibk.cs.auis.ImageBasedVisualServoing.Robot.Robot.FsmState"/>
 </qualifiedTypeNameHistroy>

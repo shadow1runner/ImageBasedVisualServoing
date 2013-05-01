@@ -36,6 +36,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.os.Parcel;
 import android.provider.ContactsContract.CommonDataKinds.Im;
 import android.util.Log;
@@ -54,6 +55,7 @@ import at.ac.uibk.cs.auis.ImageBasedVisualServoing.Calibration.CalibrationActivi
 import at.ac.uibk.cs.auis.ImageBasedVisualServoing.Calibration.CalibrationChessboardActivity;
 import at.ac.uibk.cs.auis.ImageBasedVisualServoing.Common.CalibrationHelper;
 import at.ac.uibk.cs.auis.ImageBasedVisualServoing.Common.DrawHelper;
+import at.ac.uibk.cs.auis.ImageBasedVisualServoing.Robot.Robot;
 import at.ac.uibk.cs.auis.Tracker.ColorBasedTracker;
 import at.ac.uibk.cs.auis.Tracker.TrackerHelper;
 
@@ -64,15 +66,13 @@ import at.ac.uibk.cs.auis.Tracker.TrackerHelper;
  * @author Helmut Wolf
  *
  */
-public class ImageBasedVisualServoingActivity extends Activity implements
+public class ImageBasedVisualServoingActivity extends IOIOActivity implements
 		CvCameraViewListener2, OnTouchListener  {
 	private static final String TAG = "Auis::ImageBasedVisualServoingActivity";
 
 	private CameraBridgeViewBase mOpenCvCameraView;
 
 	private Mat hsv;
-
-	private CalibrationHelper calibrationHelper;
 
 	private MenuItem CreateCalibrationMenuItem;
 	private MenuItem CreateCalibrationChessboardMenuItem;
@@ -81,9 +81,10 @@ public class ImageBasedVisualServoingActivity extends Activity implements
 	
 	private ColorBasedTracker colorBasedTracker = new ColorBasedTracker();
 	private TrackerHelper trackerHelper = new TrackerHelper();
-
-	private static final Scalar INDICATING_COLOR = new Scalar(0xbf, 0xfe, 0x00, 0x00);
 	
+	private CalibrationHelper calibrationHelper;
+	
+	private static final Scalar INDICATING_COLOR = new Scalar(0xbf, 0xfe, 0x00, 0x00);	
 	private boolean isTrackingColorSet = false;
 	
 	private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
@@ -104,6 +105,8 @@ public class ImageBasedVisualServoingActivity extends Activity implements
 		}
 	};
 
+	// ------------------------------------------ ANDROID LIFECYLCE ------------------------------------------
+	
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -161,41 +164,9 @@ public class ImageBasedVisualServoingActivity extends Activity implements
 		if (mOpenCvCameraView != null)
 			mOpenCvCameraView.disableView();
 	}
-
-	public void onCameraViewStarted(int width, int height) {
-	}
-
-	public void onCameraViewStopped() {
-	}
-
-	public Mat onCameraFrame(CvCameraViewFrame inputFrame) {
-		
-		Mat rgba = inputFrame.rgba();
-		
-		if(isTrackingColorSet) {
-			hsv = new Mat();
-			Imgproc.cvtColor(rgba, hsv, Imgproc.COLOR_RGB2HSV_FULL);
-			
-			Point[] lowestPoints = null;
-			try {
-				//lowestPoints = colorBasedTracker.getLowestBoundOfContours(hsv, 2); // 2 beacons SHOULD be in view
-				lowestPoints = colorBasedTracker.getLowestBoundOfContours(hsv, 1); // 2 beacons SHOULD be in view
-			} catch (IllegalArgumentException e) {
-			}
-			
-			for(Point point : lowestPoints) {
-				rgba = DrawHelper.drawPoint(rgba, point, new Scalar(0xFF, 0x00, 0x00, 0x00));
-			}
-			
-			for(Rect rect : colorBasedTracker.getBoundingRects())
-				rgba = DrawHelper.drawRectangle(rgba, rect, INDICATING_COLOR);
-		} else {
-			hsv=rgba;
-		}
-		
-		return rgba;
-	}
+	// ------------------------------------------ /ANDROID LIFECYLCE ------------------------------------------
 	
+	// ------------------------------------------ MENU-MANAGEMENT & -HANDLING ------------------------------------------
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		CreateCalibrationMenuItem = menu.add("Calibrate");
@@ -231,7 +202,95 @@ public class ImageBasedVisualServoingActivity extends Activity implements
 		}
 		return true;
 	}
+	// ------------------------------------------ /MENU MANAGEMENT & HANDLING ------------------------------------------
 
+	// ------------------------------------------ HANDLER ------------------------------------------
+	Handler _handler = new Handler()
+	{
+		int i=12;
+		
+		@Override
+		public void handleMessage(Message msg)
+		{
+			int chkState = msg.arg1;
+			
+			if((chkState & (1<<5)) != 0)
+			{
+				//badhack
+				if(i++ > 12)
+				{
+					Toast.makeText(getApplicationContext(), "Overheat", Toast.LENGTH_SHORT).show();
+					i = 0;
+				}
+			}
+			else
+			{
+				i = 12;
+			}
+		}
+	};
+	// ------------------------------------------ /HANDLER ------------------------------------------
+
+	// ------------------------------------------ IOIO MANAGEMENT ------------------------------------------
+	/**
+	 * A method to create our IOIO thread.
+	 * 
+	 * @see ioio.lib.util.AbstractIOIOActivity#createIOIOThread()
+	 */
+	@Override
+	protected IOIOLooper createIOIOLooper()
+	{
+		return _robot;
+	}
+	// ------------------------------------------ /IOIO MANAGEMENT ------------------------------------------
+	
+	// ------------------------------------------ CAMERA MANAGEMENT ------------------------------------------
+	public void onCameraViewStarted(int width, int height) {
+	}
+
+	public void onCameraViewStopped() {
+	}
+
+	public Mat onCameraFrame(CvCameraViewFrame inputFrame) {
+		
+		Mat rgba = inputFrame.rgba();
+		
+		if(isTrackingColorSet) {
+			hsv = new Mat();
+			Imgproc.cvtColor(rgba, hsv, Imgproc.COLOR_RGB2HSV_FULL);
+			
+			Point[] lowestPoints = null;
+			try {
+				//lowestPoints = colorBasedTracker.getLowestBoundOfContours(hsv, 2); // 2 beacons SHOULD be in view
+				lowestPoints = colorBasedTracker.getLowestBoundOfContours(hsv, 1); // 2 beacons SHOULD be in view
+			} catch (IllegalArgumentException e) {
+			}
+			
+			for(Point point : lowestPoints) {
+				rgba = DrawHelper.drawPoint(rgba, point, new Scalar(0xFF, 0x00, 0x00, 0x00));
+			}
+			
+			for(Rect rect : colorBasedTracker.getBoundingRects())
+				rgba = DrawHelper.drawRectangle(rgba, rect, INDICATING_COLOR);
+		} else {
+			hsv=rgba;
+		}
+		
+		return rgba;
+	}
+	// ------------------------------------------ /CAMERA MANAGEMENT ------------------------------------------
+	
+	// ------------------------------------------ ROBOT MANAGEMENT ------------------------------------------
+	private Robot _robot = new Robot(_handler);
+	
+	private void controlSystem() {
+		if(_robot.workInProgress())
+			return;
+		
+	}
+	// ------------------------------------------ /ROBOT MANAGEMENT ------------------------------------------	
+	
+	// ------------------------------------------ SERIALIZATION ------------------------------------------
 	private void SerializeCalibration() {
 		if(calibrationHelper==null) {
 			Log.e(TAG, "No calibration data to be serialized");
@@ -266,6 +325,7 @@ public class ImageBasedVisualServoingActivity extends Activity implements
 			Toast.makeText(getApplicationContext(), "Unable to load data", Toast.LENGTH_LONG).show();
 		}
 	}
+	// ------------------------------------------ SERIALIZATION ------------------------------------------
 
 	@Override
 	public boolean onTouch(View v, MotionEvent event) {
