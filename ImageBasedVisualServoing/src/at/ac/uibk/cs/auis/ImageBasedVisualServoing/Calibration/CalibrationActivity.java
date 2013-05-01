@@ -1,5 +1,6 @@
 package at.ac.uibk.cs.auis.ImageBasedVisualServoing.Calibration;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.opencv.android.BaseLoaderCallback;
@@ -70,7 +71,7 @@ public class CalibrationActivity extends Activity implements
 	// controller elements
 	private ColorBasedTracker colorBasedTracker = new ColorBasedTracker();
 	private TrackerHelper trackerHelper = new TrackerHelper();
-	private CalibrationHelper calibrationHelper = new CalibrationHelper();
+	private CalibrationHelper calibrationHelper;
 	private States state = States.GatherFirstPoint;
 	private Point centerOfMass;
 	private boolean isTrackingColorSet = false;
@@ -84,6 +85,16 @@ public class CalibrationActivity extends Activity implements
 	}
 	
 	private Mat mHsv;
+	
+	public CalibrationActivity() {
+		List<Point> worldCoordinates = new ArrayList<Point>();
+		worldCoordinates.add(new Point(175.0, 125.0));
+		worldCoordinates.add(new Point(175.0, 25.0));
+		worldCoordinates.add(new Point(275.0, 25.0));
+		worldCoordinates.add(new Point(275.0, 125.0));
+		
+		calibrationHelper = new CalibrationHelper(worldCoordinates);
+	}
 
 	private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
 		@Override
@@ -230,19 +241,19 @@ public class CalibrationActivity extends Activity implements
 		int pointNumber = -1;
 		switch(state) {
 		case GatherFirstPoint:
-			pointNumber = 1;
+			pointNumber = 0;
 			state = States.GatherSecondPoint;
 			break;
 		case GatherSecondPoint:
-			pointNumber = 2;
+			pointNumber = 1;
 			state = States.GatherThirdPoint;
 			break;
 		case GatherThirdPoint:
-			pointNumber = 3;
+			pointNumber = 2;
 			state = States.GatherFourthPoint;
 			break;
 		case GatherFourthPoint:
-			pointNumber = 4;	
+			pointNumber = 3;	
 			state = States.DisplaySummary;
 			break;
 		default:

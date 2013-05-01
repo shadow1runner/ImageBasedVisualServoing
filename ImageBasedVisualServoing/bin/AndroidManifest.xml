@@ -36,6 +36,10 @@
             android:name=".Calibration.CalibrationActivity"
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="landscape" />
+        <activity
+            android:name=".Calibration.CalibrationChessboardActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="landscape" />
     </application>
 
     <supports-screens

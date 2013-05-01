@@ -6,7 +6,6 @@
 <fullyQualifiedTypeName name="android.widget.Button"/>
 <fullyQualifiedTypeName name="at.ac.uibk.cs.auis.ImageBasedVisualServoing.R.id"/>
 <fullyQualifiedTypeName name="java.lang.Runnable"/>
-<fullyQualifiedTypeName name="android.widget.TextView"/>
 <fullyQualifiedTypeName name="at.ac.uibk.cs.auis.ImageBasedVisualServoing.R.string"/>
 <fullyQualifiedTypeName name="sun.security.acl.WorldGroupImpl"/>
 <fullyQualifiedTypeName name="at.ac.uibk.cs.auis.ImageBasedVisualServoing.CalibrationHelper"/>
@@ -22,7 +21,6 @@
 <fullyQualifiedTypeName name="android.view.View.OnTouchListener"/>
 <fullyQualifiedTypeName name="android.view.View.OnClickListener"/>
 <fullyQualifiedTypeName name="at.ac.uibk.cs.auis.ImageBasedVisualServoing.ImageBasedVisualServoingActivity"/>
-<fullyQualifiedTypeName name="at.ac.uibk.cs.auis.ImageBasedVisualServoing.Calibration.CalibrationActivity"/>
 <fullyQualifiedTypeName name="android.widget.Toast"/>
 <fullyQualifiedTypeName name="java.io.FileOutputStream"/>
 <fullyQualifiedTypeName name="android.os.Parcel"/>
@@ -31,13 +29,11 @@
 <fullyQualifiedTypeName name="java.io.ObjectInputStream"/>
 <fullyQualifiedTypeName name="java.io.IOException"/>
 <fullyQualifiedTypeName name="android.os.Parcelable"/>
-<fullyQualifiedTypeName name="at.ac.uibk.cs.auis.ImageBasedVisualServoing.Common.ParcelablePoint"/>
 <fullyQualifiedTypeName name="java.io.Serializable"/>
 <fullyQualifiedTypeName name="org.opencv.core.Mat"/>
 <fullyQualifiedTypeName name="org.opencv.core.CvType"/>
 <fullyQualifiedTypeName name="org.junit.Before"/>
 <fullyQualifiedTypeName name="at.ac.uibk.cs.auis.ImageBasedVisualServoing.Common.CalibrationHelperTest"/>
-<fullyQualifiedTypeName name="org.opencv.core.Point"/>
 <fullyQualifiedTypeName name="android.provider.ContactsContract.CommonDataKinds.Im"/>
 <fullyQualifiedTypeName name="java.util.TreeMap"/>
 <fullyQualifiedTypeName name="java.util.Map"/>
@@ -45,7 +41,6 @@
 <fullyQualifiedTypeName name="org.opencv.core.MatOfPoint"/>
 <fullyQualifiedTypeName name="java.util.Comparator"/>
 <fullyQualifiedTypeName name="java.lang.IllegalArgumentException"/>
-<fullyQualifiedTypeName name="java.util.ArrayList"/>
 <fullyQualifiedTypeName name="java.lang.Integer"/>
 <fullyQualifiedTypeName name="org.opencv.core.Scalar"/>
 <fullyQualifiedTypeName name="at.ac.uibk.cs.auis.ImageBasedVisualServoing.Common.DrawHelper"/>
@@ -53,4 +48,16 @@
 <fullyQualifiedTypeName name="ioio.lib.util.android.IOIOActivity"/>
 <fullyQualifiedTypeName name="android.os.Handler"/>
 <fullyQualifiedTypeName name="android.os.Message"/>
+<fullyQualifiedTypeName name="org.opencv.core.Size"/>
+<fullyQualifiedTypeName name="org.opencv.core.TermCriteria"/>
+<fullyQualifiedTypeName name="android.widget.LinearLayout"/>
+<fullyQualifiedTypeName name="android.widget.TextView"/>
+<fullyQualifiedTypeName name="org.opencv.calib3d.Calib3d"/>
+<fullyQualifiedTypeName name="org.opencv.core.MatOfPoint2f"/>
+<fullyQualifiedTypeName name="at.ac.uibk.cs.auis.ImageBasedVisualServoing.Calibration.CalibrationActivity"/>
+<fullyQualifiedTypeName name="at.ac.uibk.cs.auis.ImageBasedVisualServoing.Common.CalibrationHelper"/>
+<fullyQualifiedTypeName name="java.util.ArrayList"/>
+<fullyQualifiedTypeName name="at.ac.uibk.cs.auis.ImageBasedVisualServoing.Calibration.CalibrationChessboardActivity"/>
+<fullyQualifiedTypeName name="org.opencv.core.Point"/>
+<fullyQualifiedTypeName name="at.ac.uibk.cs.auis.ImageBasedVisualServoing.Common.ParcelablePoint"/>
 </qualifiedTypeNameHistroy>

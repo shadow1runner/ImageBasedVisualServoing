@@ -4,5 +4,7 @@
     <string name="CalibrationLabelPoint">Point #%1$d - world coordinates (%2$d, %3$d)</string>
     <string name="CalibrationButtonNextText">>></string>
     <string name="CalibrationButtonBackText">&lt;&lt;</string>
+    <string name="CalibrationButtonBackText">&lt;&lt;</string>
+    <string name="CalibrateChessboardCornersText">Calibrate</string>
 </resources>
 

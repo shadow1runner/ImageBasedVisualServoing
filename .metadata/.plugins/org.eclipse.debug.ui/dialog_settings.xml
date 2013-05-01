@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section name="Workbench">
+	<item value="83" key="org.eclipse.jdt.internal.debug.ui.actions.PopupDisplayAction$DisplayPopupDIALOG_HEIGHT"/>
+	<item value="269" key="org.eclipse.jdt.internal.debug.ui.actions.PopupDisplayAction$DisplayPopupDIALOG_WIDTH"/>
 	<section name="org.eclipse.debug.ui.sourcelookup.SourceLookupDialog">
 		<item value="700" key="DIALOG_WIDTH"/>
 		<item value="191" key="DIALOG_Y_ORIGIN"/>
-		<item value="502" key="DIALOG_HEIGHT"/>
 		<item value="619" key="DIALOG_X_ORIGIN"/>
+		<item value="502" key="DIALOG_HEIGHT"/>
 		<item value="1|Segoe UI|9.0|0|WINDOWS|1|-15|0|0|0|400|0|0|0|1|0|0|0|0|Segoe UI" key="DIALOG_FONT_NAME"/>
 	</section>
 	<section name="org.eclipse.debug.ui.SELECT_LAUNCHERS_DIALOG">
@@ -17,8 +19,8 @@
 		<item value=", org.eclipse.jdt.junit.launchconfig, com.android.ide.eclipse.adt.debug.LaunchConfigType, " key="org.eclipse.debug.ui.EXPANDED_NODES"/>
 		<item value="702" key="DIALOG_HEIGHT"/>
 		<item value="397" key="org.eclipse.debug.ui.DIALOG_SASH_WEIGHTS_1"/>
-		<item value="602" key="org.eclipse.debug.ui.DIALOG_SASH_WEIGHTS_2"/>
 		<item value="1|Segoe UI|9.0|0|WINDOWS|1|-15|0|0|0|400|0|0|0|1|0|0|0|0|Segoe UI" key="DIALOG_FONT_NAME"/>
+		<item value="602" key="org.eclipse.debug.ui.DIALOG_SASH_WEIGHTS_2"/>
 	</section>
 	<section name="org.eclipse.debug.ui.SELECT_LAUNCH_SHORTCUT_DIALOG">
 		<item value="367" key="DIALOG_WIDTH"/>

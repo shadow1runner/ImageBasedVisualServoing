@@ -13,8 +13,10 @@
 		<item value="false" key="casesensitive"/>
 		<item value="false" key="incremental"/>
 		<item value="false" key="wholeword"/>
-		<item value="" key="selection"/>
+		<item value="runOn" key="selection"/>
 		<list key="findhistory">
+			<item value="runon"/>
+			<item value="Point"/>
 			<item value="oncreate"/>
 			<item value="intent"/>
 			<item value="onmanager"/>

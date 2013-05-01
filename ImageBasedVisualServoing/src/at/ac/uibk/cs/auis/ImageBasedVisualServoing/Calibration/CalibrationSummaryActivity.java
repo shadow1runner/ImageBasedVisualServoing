@@ -32,6 +32,7 @@ import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.GridView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import at.ac.uibk.cs.auis.ImageBasedVisualServoing.ImageBasedVisualServoingActivity;
 import at.ac.uibk.cs.auis.ImageBasedVisualServoing.R;
@@ -52,16 +53,11 @@ public class CalibrationSummaryActivity extends Activity {
 
 	// controller elements
 	private CalibrationHelper calibrationHelper;
+	private LinearLayout linearLayoutSummary;
 
-	private TextView summaryPoint1;
-
-	private TextView summaryPoint2;
-
-	private TextView summaryPoint3;
-
-	private TextView summaryPoint4;
-
-	private TextView summaryHeader;	
+	private TextView summaryHeader;
+	private TextView[] summaryPoints;
+	
 
 	/** Called when the activity is first created. */
 	@Override
@@ -83,21 +79,28 @@ public class CalibrationSummaryActivity extends Activity {
 			finish();
 		}
 		
-		Intent i = getIntent();
-		calibrationHelper = (CalibrationHelper) i.getParcelableExtra("calibrationHelper");
+		Intent intent = getIntent();
+		calibrationHelper = (CalibrationHelper) intent.getParcelableExtra("calibrationHelper");
+		
+		linearLayoutSummary = (LinearLayout) findViewById(R.id.linearLayoutSummary);
 		
 		summaryHeader = (TextView) findViewById(R.id.summaryHeader);
-		summaryPoint1 = (TextView) findViewById(R.id.summaryPoint1);
-		summaryPoint2 = (TextView) findViewById(R.id.summaryPoint2);
-		summaryPoint3 = (TextView) findViewById(R.id.summaryPoint3);
-		summaryPoint4 = (TextView) findViewById(R.id.summaryPoint4);
 		
 		List<String> summary = calibrationHelper.getSummary();
 		summaryHeader.setText(summary.get(0));
-		summaryPoint1.setText(summary.get(1));
-		summaryPoint2.setText(summary.get(2));
-		summaryPoint3.setText(summary.get(3));
-		summaryPoint4.setText(summary.get(4));
+		summaryPoints = new TextView[summary.size()-1];
+		
+		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+	            LinearLayout.LayoutParams.MATCH_PARENT,
+	            LinearLayout.LayoutParams.WRAP_CONTENT);
+		
+		for(int i=1;i<summary.size();i++) {
+			summaryPoints[i-1] = new TextView(this);
+			summaryPoints[i-1].setId(i-1);
+			summaryPoints[i-1].setText(summary.get(i));
+			
+			linearLayoutSummary.addView(summaryPoints[i-1], params);
+		}
 		
 		Button restartCalibration = (Button) findViewById(R.id.restartCalibration);
 		restartCalibration.setOnClickListener(new OnClickListener() {

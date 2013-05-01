@@ -51,6 +51,7 @@ import android.widget.Toast;
 
 import at.ac.uibk.cs.auis.ImageBasedVisualServoing.R;
 import at.ac.uibk.cs.auis.ImageBasedVisualServoing.Calibration.CalibrationActivity;
+import at.ac.uibk.cs.auis.ImageBasedVisualServoing.Calibration.CalibrationChessboardActivity;
 import at.ac.uibk.cs.auis.ImageBasedVisualServoing.Common.CalibrationHelper;
 import at.ac.uibk.cs.auis.ImageBasedVisualServoing.Common.DrawHelper;
 import at.ac.uibk.cs.auis.Tracker.ColorBasedTracker;
@@ -74,6 +75,7 @@ public class ImageBasedVisualServoingActivity extends Activity implements
 	private CalibrationHelper calibrationHelper;
 
 	private MenuItem CreateCalibrationMenuItem;
+	private MenuItem CreateCalibrationChessboardMenuItem;
 	private MenuItem SerializeCalibrationMenuItem;
 	private MenuItem LoadCalibrationMenuItem;
 	
@@ -197,6 +199,7 @@ public class ImageBasedVisualServoingActivity extends Activity implements
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		CreateCalibrationMenuItem = menu.add("Calibrate");
+		CreateCalibrationChessboardMenuItem = menu.add("Calibrate with chessboard");
 		SerializeCalibrationMenuItem = menu.add("Serialize current calibration");
 		LoadCalibrationMenuItem = menu.add("Load current calibration");
 		return true;
@@ -208,6 +211,10 @@ public class ImageBasedVisualServoingActivity extends Activity implements
 		if(item==CreateCalibrationMenuItem) {
 			Log.i(TAG, "CreateCalibrationMenuItem has been clicked, invoking calibration intent");
 			Intent calibrateIntent = new Intent(ImageBasedVisualServoingActivity.this, CalibrationActivity.class);
+	        startActivity(calibrateIntent);
+		} else if(item==CreateCalibrationChessboardMenuItem) {
+			Log.i(TAG, "CreateCalibrationChessboardMenuItem has been clicked, invoking calibration via chessboard intent");
+			Intent calibrateIntent = new Intent(ImageBasedVisualServoingActivity.this, CalibrationChessboardActivity.class);
 	        startActivity(calibrateIntent);
 		} else if(item==SerializeCalibrationMenuItem) {
 			Log.i(TAG, "SerializeCalibrationMenuItem has been clicked");
