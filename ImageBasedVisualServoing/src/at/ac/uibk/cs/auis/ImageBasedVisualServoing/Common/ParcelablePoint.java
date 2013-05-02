@@ -2,8 +2,6 @@ package at.ac.uibk.cs.auis.ImageBasedVisualServoing.Common;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.ArrayList;
-
 import android.os.Parcel;
 import android.os.Parcelable;
 

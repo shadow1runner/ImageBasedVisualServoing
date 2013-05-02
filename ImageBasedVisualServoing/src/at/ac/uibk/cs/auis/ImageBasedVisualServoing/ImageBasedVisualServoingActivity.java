@@ -5,8 +5,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.List;
-
 import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.CameraBridgeViewBase;
 import org.opencv.android.CameraBridgeViewBase.CvCameraViewFrame;
@@ -21,24 +19,13 @@ import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 
-import ioio.lib.api.DigitalInput;
-import ioio.lib.api.DigitalOutput;
-import ioio.lib.api.PwmOutput;
-import ioio.lib.api.TwiMaster;
-import ioio.lib.api.exception.ConnectionLostException;
-import ioio.lib.util.BaseIOIOLooper;
 import ioio.lib.util.IOIOLooper;
 import ioio.lib.util.android.IOIOActivity;
 
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.os.Parcel;
-import android.provider.ContactsContract.CommonDataKinds.Im;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -56,6 +43,7 @@ import at.ac.uibk.cs.auis.ImageBasedVisualServoing.Calibration.CalibrationChessb
 import at.ac.uibk.cs.auis.ImageBasedVisualServoing.Common.CalibrationHelper;
 import at.ac.uibk.cs.auis.ImageBasedVisualServoing.Common.DrawHelper;
 import at.ac.uibk.cs.auis.ImageBasedVisualServoing.Robot.Robot;
+import at.ac.uibk.cs.auis.ImageBasedVisualServoing.Robot.SubsumptionArchiteture.Level1;
 import at.ac.uibk.cs.auis.Tracker.ColorBasedTracker;
 import at.ac.uibk.cs.auis.Tracker.TrackerHelper;
 
@@ -263,6 +251,7 @@ public class ImageBasedVisualServoingActivity extends IOIOActivity implements
 			try {
 				//lowestPoints = colorBasedTracker.getLowestBoundOfContours(hsv, 2); // 2 beacons SHOULD be in view
 				lowestPoints = colorBasedTracker.getLowestBoundOfContours(hsv, 1); // 2 beacons SHOULD be in view
+				
 			} catch (IllegalArgumentException e) {
 			}
 			
@@ -281,13 +270,7 @@ public class ImageBasedVisualServoingActivity extends IOIOActivity implements
 	// ------------------------------------------ /CAMERA MANAGEMENT ------------------------------------------
 	
 	// ------------------------------------------ ROBOT MANAGEMENT ------------------------------------------
-	private Robot _robot = new Robot(_handler);
-	
-	private void controlSystem() {
-		if(_robot.workInProgress())
-			return;
-		
-	}
+	private Level1 _robot = new Level1(new Robot(_handler));
 	// ------------------------------------------ /ROBOT MANAGEMENT ------------------------------------------	
 	
 	// ------------------------------------------ SERIALIZATION ------------------------------------------
@@ -342,14 +325,15 @@ public class ImageBasedVisualServoingActivity extends IOIOActivity implements
 
         if ((x < 0) || (y < 0) || (x > cols) || (y > rows))
         	return false;
-        
-        // todo
+
         Point groundPlane = calculateGroundPlaneCoordinates(new Point(x, y));
         
         Log.i(TAG, "Ground plane coordinates: (" + groundPlane.x + ", " + groundPlane.y + ")");
         
         colorBasedTracker.setColorForTrackingHSV(trackerHelper.calcColorForTracking(hsv, new Point(x,y)));
         isTrackingColorSet = true;
+        
+        _robot.setSetPoint(groundPlane);
         
         return true	;
 	}

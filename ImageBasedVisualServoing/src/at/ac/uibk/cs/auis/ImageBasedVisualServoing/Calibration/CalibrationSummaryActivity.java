@@ -2,45 +2,19 @@ package at.ac.uibk.cs.auis.ImageBasedVisualServoing.Calibration;
 
 import java.util.List;
 
-import org.opencv.android.BaseLoaderCallback;
-import org.opencv.android.CameraBridgeViewBase;
-import org.opencv.android.CameraBridgeViewBase.CvCameraViewFrame;
-import org.opencv.android.CameraBridgeViewBase.CvCameraViewListener2;
-import org.opencv.android.LoaderCallbackInterface;
-import org.opencv.android.OpenCVLoader;
-import org.opencv.core.Core;
-import org.opencv.core.Mat;
-import org.opencv.core.Point;
-import org.opencv.core.Rect;
-import org.opencv.core.Scalar;
-import org.opencv.imgproc.Imgproc;
-
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.MotionEvent;
-import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnTouchListener;
 import android.view.WindowManager;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import at.ac.uibk.cs.auis.ImageBasedVisualServoing.ImageBasedVisualServoingActivity;
 import at.ac.uibk.cs.auis.ImageBasedVisualServoing.R;
 import at.ac.uibk.cs.auis.ImageBasedVisualServoing.Common.CalibrationHelper;
-import at.ac.uibk.cs.auis.ImageBasedVisualServoing.R.id;
-import at.ac.uibk.cs.auis.ImageBasedVisualServoing.R.layout;
-import at.ac.uibk.cs.auis.Tracker.ColorBasedTracker;
-import at.ac.uibk.cs.auis.Tracker.TrackerHelper;
 
 /**
  * @author Helmut Wolf

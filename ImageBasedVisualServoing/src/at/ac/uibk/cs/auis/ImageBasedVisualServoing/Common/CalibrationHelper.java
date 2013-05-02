@@ -6,12 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.opencv.calib3d.Calib3d;
-import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.Point;
-import org.opencv.imgproc.Imgproc;
-
 import android.os.Parcel;
 import android.os.Parcelable;
 

@@ -10,40 +10,24 @@ import org.opencv.android.CameraBridgeViewBase.CvCameraViewListener2;
 import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.OpenCVLoader;
 import org.opencv.calib3d.Calib3d;
-import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.Point;
-import org.opencv.core.Rect;
-import org.opencv.core.Scalar;
 import org.opencv.core.Size;
-import org.opencv.core.TermCriteria;
 import org.opencv.imgproc.Imgproc;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnTouchListener;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 import at.ac.uibk.cs.auis.ImageBasedVisualServoing.R;
 import at.ac.uibk.cs.auis.ImageBasedVisualServoing.Common.CalibrationHelper;
-import at.ac.uibk.cs.auis.ImageBasedVisualServoing.Common.DrawHelper;
-import at.ac.uibk.cs.auis.ImageBasedVisualServoing.R.id;
-import at.ac.uibk.cs.auis.ImageBasedVisualServoing.R.layout;
-import at.ac.uibk.cs.auis.ImageBasedVisualServoing.R.string;
-import at.ac.uibk.cs.auis.Tracker.ColorBasedTracker;
-import at.ac.uibk.cs.auis.Tracker.TrackerHelper;
 
 /**
  * Activity is used for calibrating camera:
@@ -74,10 +58,30 @@ public class CalibrationChessboardActivity extends Activity implements
 		for(int i=0;i<7*7;i++) {
 			worldCoordinates.add(new Point(i, i));
 		}
-//		worldCoordinates.add(new Point(175.0, 125.0));
-//		worldCoordinates.add(new Point(175.0, 25.0));
-//		worldCoordinates.add(new Point(275.0, 25.0));
-//		worldCoordinates.add(new Point(275.0, 125.0));
+//		List<Point> worldCoordinates = new ArrayList<Point>();
+//		// TODO give correct dimensions [1]
+//		int dimX = 7;
+//		int dimY = 7;
+//		// TODO give correct offset [mm] (relative to robot position, which is at (0,0))
+//		int dx = 150;
+//		int dy = 30;
+//		// TODO give correct dimensions of 1 square [mm] (measured on printed A4-sheet)
+//		int lx = 30;
+//		int ly = 30;
+//
+//		/*
+//		(0,0) (0,1) .... (0,6)
+//		   .
+//		   .
+//		   .
+//		(6,0) (6,1) .... (6,6)
+//		*/
+//		for(int i=0;i<dimY;i++) {
+//		      for(int j=0;j<dimX;j++) {
+//		            worldCoordinates.add(new Point(dx-i*lx, dy+j*ly));         
+//		      }
+//		}
+
 		
 		calibrationHelper = new CalibrationHelper(worldCoordinates);
 	}
