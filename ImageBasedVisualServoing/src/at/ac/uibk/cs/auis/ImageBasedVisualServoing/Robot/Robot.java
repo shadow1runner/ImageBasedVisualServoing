@@ -12,6 +12,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import at.ac.uibk.cs.auis.ImageBasedVisualServoing.Robot.SubsumptionArchiteture.Level1;
 import ioio.lib.api.DigitalInput;
 import ioio.lib.api.DigitalOutput;
 import ioio.lib.api.PwmOutput;
@@ -52,7 +53,7 @@ public class Robot extends BaseIOIOLooper {
 	}
 
 	private enum FsmState {
-		IDLE, TURN_IN_PROGRESS, MOVE_IN_PROGRESS
+		IDLE, TURN_IN_PROGRESS, MOVE_IN_PROGRESS, GRABBING
 	};
 
 	private FsmState _fsmState = FsmState.IDLE;
@@ -60,11 +61,13 @@ public class Robot extends BaseIOIOLooper {
 	private RobotPosition _prevCurrentPos;
 	private RobotPosition _currentPos;
 	private RobotPosition _setPoint = new RobotPosition(0, 0, 0);
+	private Level1 _level1;
 
-	public Robot(Handler handler) {
+	public Robot(Handler handler, Level1 level1) {
 		log2File("In Robot-ctor");
 		log2File("assigning handler to _handler");
 		_handler = handler;
+		_level1 = level1;
 	}
 
 	/**
@@ -77,10 +80,13 @@ public class Robot extends BaseIOIOLooper {
 	 * @see ioio.lib.util.AbstractIOIOActivity.IOIOThread#setup()
 	 */
 	@Override
-	protected void setup() throws ConnectionLostException {
+	public void setup() throws ConnectionLostException {
 		try {
 			log2File("in setup()");
 			Log.i(TAG, "in setup");
+			
+			log2File("calling _level1.setup()");
+			_level1.setup(this);
 
 			//log2File("opening leds");
 			//_led = ioio_.openDigitalOutput(0, true);
@@ -116,6 +122,10 @@ public class Robot extends BaseIOIOLooper {
 		
 		try {
 			Thread.sleep(100);
+			
+			log2File("calling _level1.loop()");
+			_level1.loop();
+			log2File("called _level1.loop()");
 
 			int chkState = getSensorReadings();
 			_prevCurrentPos = _currentPos;
@@ -163,6 +173,9 @@ public class Robot extends BaseIOIOLooper {
 							+ _currentPos + ", setPoint is: " + _setPoint);
 					Log.d(TAG, "Robot still turning: " + _currentPos
 							+ ", setPoint is: " + _setPoint);
+					break;
+				case GRABBING:
+					log2File("robot in GRABBING-mode");
 					break;
 				}
 			}
@@ -360,5 +373,40 @@ public class Robot extends BaseIOIOLooper {
 	public boolean workInProgress() {
 		log2File("in workInProgress");
 		return _fsmState != FsmState.IDLE;
+	}
+
+	/**
+	 * sets the grabber to the given percentage
+	 * a percent-value of 0 means the grabber is 'open'
+	 * a percent-value of 100 means the grabber is 'down' (i.e. is grabbing)
+	 * @param percent
+	 * 	should have a range between [0, 100]
+	 * @throws ConnectionLostException 
+	 */
+	public void grab(int percent) throws ConnectionLostException {
+		log2File("in grab, with percent: " + percent);
+
+		synchronized (_fsmState) {
+			if (_fsmState != FsmState.IDLE) {
+				log2File("robot not in idle mode => ignored");
+				//throw new IllegalStateException(); // ignored, as user e.g. can touch more than once
+			} else {
+				log2File("doing FSM-state transition: IDLE => GRABBING"); // should already be, but just to be sure
+				_fsmState=FsmState.GRABBING;
+			}
+		}
+		
+		grab_Internal(percent);
+		
+		synchronized (_fsmState) {
+			log2File("doing FSM-state transition: GRABBING => IDLE"); // should already be, but just to be sure
+			_fsmState = FsmState.IDLE;
+		}
+	}
+
+	private void grab_Internal(int percent) throws ConnectionLostException {
+		log2File("in grab_Internal with percent: " + percent);
+		_servo.setDutyCycle(0.0528f + percent * 0.0005f);
+		log2File("grab_Internal finished successfully");
 	}
 }

@@ -43,6 +43,7 @@ import at.ac.uibk.cs.auis.ImageBasedVisualServoing.Calibration.CalibrationChessb
 import at.ac.uibk.cs.auis.ImageBasedVisualServoing.Common.CalibrationHelper;
 import at.ac.uibk.cs.auis.ImageBasedVisualServoing.Common.DrawHelper;
 import at.ac.uibk.cs.auis.ImageBasedVisualServoing.Robot.Robot;
+import at.ac.uibk.cs.auis.ImageBasedVisualServoing.Robot.SubsumptionArchiteture.Level1;
 import at.ac.uibk.cs.auis.Tracker.ColorBasedTracker;
 import at.ac.uibk.cs.auis.Tracker.TrackerHelper;
 
@@ -344,8 +345,9 @@ public class ImageBasedVisualServoingActivity extends IOIOActivity implements
 
 	// ------------------------------------------ ROBOT MANAGEMENT
 	// ------------------------------------------
-	// private Level1 _robot = new Level1(new Robot(_handler));
-	private Robot _robot = new Robot(_handler);
+	private Level1 _level1 = new Level1();
+	private Robot _robot = new Robot(_handler, _level1);
+	//private Robot _robot = new Robot(_handler);
 
 	// ------------------------------------------ /ROBOT MANAGEMENT
 	// ------------------------------------------
@@ -433,17 +435,18 @@ public class ImageBasedVisualServoingActivity extends IOIOActivity implements
 				.calcColorForTracking(hsv, new Point(x, y)));
 		isTrackingColorSet = true;
 
-		try {
+//		try {
 			Log.d(TAG, "Triggering robot.move(30)");
 			//_robot.rotate(30);
-			_robot.move(50);
-		} catch (ConnectionLostException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+			//_robot.move(50);
+			_level1.setSetPoint(new Point(30,40));
+//		} catch (ConnectionLostException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (InterruptedException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 
 		return true;
 	}

@@ -1,39 +1,62 @@
 package at.ac.uibk.cs.auis.ImageBasedVisualServoing.Robot.SubsumptionArchiteture;
 
 import ioio.lib.api.exception.ConnectionLostException;
-import ioio.lib.util.BaseIOIOLooper;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import org.opencv.core.Point;
 
-import android.util.Log;
+import android.os.Environment;
 import at.ac.uibk.cs.auis.ImageBasedVisualServoing.Robot.Robot;
 
-public class Level1 extends BaseIOIOLooper {
+public class Level1 {
 	private static final String TAG = "Level1";
 	private int DEGREE_GRANULARITY = 4;
 	private int ROUTE_GRANULARITY = 10;
 
-	public Level1(Robot robot) {
-		Log.v(TAG, "In Level1-ctor");
-		_robot = robot;
+	private static boolean append2File = false;
+
+	private static void log2File(String message) {
+		File root = Environment.getExternalStorageDirectory();
+		File file = new File(root, "level1.txt");
+		FileWriter filewriter;
+		try {
+			filewriter = new FileWriter(file, append2File);
+			if (append2File == false)
+				append2File = true;
+			BufferedWriter bufferedWriter = new BufferedWriter(filewriter);
+			DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss:SSS");
+
+			Date date = new Date();
+			bufferedWriter.write(dateFormat.format(date) + " by #"
+					+ Thread.currentThread().getId() + ": " + message + "\r\n");
+			bufferedWriter.close();
+			filewriter.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
-	
+
+	public Level1() {
+		log2File("In Level1-ctor");
+	}
+
 	/*
-	 * the following state transitions are valid:
-	 * IDLE
-	 *   [setPoint set]
-	 *  -> TURN 
-	 *   [angle reached]
-	 *  -> MOVE
-	 * i.e. the robot first of all turns to the specified setPoint than moves to it
+	 * the following state transitions are valid: IDLE [setPoint set] -> TURN
+	 * [angle reached] -> MOVE i.e. the robot first of all turns to the
+	 * specified setPoint than moves to it
 	 */
 	private enum FsmState {
-		IDLE,
-		TURNING,
-		MOVING,
-		GRABBING
+		IDLE, TURNING, MOVING, GRABBING
 	};
-	
+
 	private FsmState _fsmState = FsmState.IDLE;
 	private Robot _robot;
 	private Point _setPoint;
@@ -41,131 +64,165 @@ public class Level1 extends BaseIOIOLooper {
 	private int _degreeCachePointer;
 	private int[] _routesCached;
 	private int _routeCachePointer;
-	
-	
-	@Override
+	private boolean _grabFinished;
+
+	public void setup(Robot robot) throws ConnectionLostException {
+		log2File("in setup()");
+		_robot = robot;
+	}
+
 	public void loop() throws ConnectionLostException, InterruptedException {
-		Log.v(TAG, "In loop()");
-		if(_robot.workInProgress()) {
-			Log.d(TAG, "Robot workInProgress: true");
-			switch(_fsmState) {
+		log2File("in loop()");
+		if (_robot.workInProgress()) {
+			log2File("Robot workInProgress: true");
+			switch (_fsmState) {
 			case IDLE:
-				Log.d(TAG, "Staying in IDLE-mode");
+				log2File("Staying in IDLE-mode");
 				break;
 			case MOVING:
-				if(isRouteFinished()) {
-					Log.d(TAG, "MOVING -> GRABBING");
+				if (isRouteFinished()) {
+					log2File("MOVING -> GRABBING");
 					_fsmState = FsmState.GRABBING;
+					
+					log2File("_routesCached = null;");
+					_routesCached = null;
+					
+					log2File("setting _grabFinished to false");
+					_grabFinished = false;
 				} else {
-					Log.d(TAG, "Staying in MOVING-mode");
+					log2File("Staying in MOVING-mode");
 				}
 				break;
 			case TURNING:
-				if(isTurnFinished()) {
-					Log.d(TAG, "TURNING -> MOVING");
+				if (isTurnFinished()) {
+					log2File("TURNING -> MOVING");
 					_fsmState = FsmState.MOVING;
+					
+					log2File("_degreesCached = null;");
+					_degreesCached = null;
 				} else {
-					Log.d(TAG, "Staying in TURNING-mode");
+					log2File("Staying in TURNING-mode");
 				}
 				break;
 			case GRABBING:
-				if(isGrabbingFinished()) {
-					Log.d(TAG, "GRABBING -> IDLE");
+				if (isGrabbingFinished()) {
+					log2File("GRABBING -> IDLE");
 					_fsmState = FsmState.MOVING;
 				} else {
-					Log.d(TAG, "Staying in GRABBING-mode");
+					log2File("Staying in GRABBING-mode");
 				}
 				break;
 			}
 		} else {
-			Log.d(TAG, "Robot workInProgress: false");
+			log2File("Robot workInProgress: false");
 			// robot is waiting for new commands
-			switch(_fsmState) {
+			switch (_fsmState) {
 			case IDLE:
+				_robot.grab(0);
 				break;
 			case MOVING:
 				int amount = getNextScheduledRoute();
-				Log.i(TAG, "Scheduling new move-amount for robot: " + amount + "cm");
+				log2File("Scheduling new move-amount for robot: " + amount + "cm");
 				_robot.move(amount);
-				break;			
+				break;
 			case TURNING:
 				int degree = getNextScheduledAngle();
-				Log.i(TAG, "Scheduling new rotate-amount for robot: " + degree + "°");
+				log2File("Scheduling new rotate-amount for robot: " + degree
+						+ "°");
 				_robot.rotate(degree);
 				break;
 			case GRABBING:
-				// TODO
+				log2File("Scheduling new grab-command for robot");
+				_robot.grab(100);
+				_grabFinished = true;
+				_fsmState = FsmState.IDLE;
 				break;
 			default:
 				break;
-			
 			}
 		}
-		
-		Log.v(TAG, "calling _robot.loop");
-		_robot.loop(); // always call base looper
 	}
-	
+
 	private boolean isGrabbingFinished() {
-		// TODO
-		throw new RuntimeException();
+		log2File("in isGrabbingFinished()");
+		
+		log2File("_grabFinished: " + _grabFinished);
+		return _grabFinished == true;
 	}
 
 	private boolean isRouteFinished() {
-		return _routeCachePointer==ROUTE_GRANULARITY;
+		log2File("in isRouteFinished()");
+		log2File("_routeCachePointer == ROUTE_GRANULARITY: "
+				+ _routeCachePointer + " == " + ROUTE_GRANULARITY);
+		return _routeCachePointer == ROUTE_GRANULARITY;
 	}
 
 	private boolean isTurnFinished() {
-		return _degreeCachePointer==DEGREE_GRANULARITY;
+		return _degreeCachePointer == DEGREE_GRANULARITY;
 	}
 
 	/**
-	 * calculates and returns a given amount in [cm] using an multiplicative increase method
-	 * @return
-	 *  amount which should be scheduled to the robot to be moved
+	 * calculates and returns a given amount in [cm] using an multiplicative
+	 * increase method
+	 * 
+	 * @return amount which should be scheduled to the robot to be moved
 	 */
 	public int getNextScheduledRoute() {
-		Log.v(TAG, "In calculateRoute()");
-		if(_routesCached==null) {
+		log2File("In getNextScheduledRoute()");
+		if (_routesCached == null) {
 			calculateRouteSchedule();
+		}
+		if(isRouteFinished()) {
+			log2File("Route is finished, returning nothing");
+			return 0;
 		}
 		
 		int _return = _routesCached[_routeCachePointer++];
-		Log.d(TAG, "Return new scheduled route: " + _return + "cm");
+		log2File("Return new scheduled route: " + _return + "cm");
 		return _return;
 	}
 
 	private void calculateRouteSchedule() {
-		Log.v(TAG, "In calculateRouteSchedule()");
+		log2File("In calculateRouteSchedule()");
 		_routesCached = new int[ROUTE_GRANULARITY];
 		int temp = (int) (_setPoint.x / 2);
 		int sum = 0;
 		int i;
-		for(i=0;i<_routesCached.length-1;i++) {
+		for (i = 0; i < _routesCached.length - 1; i++) {
+			log2File("in calculateRouteSchedule(), iteration #" + i);
 			sum += temp;
+
+			log2File("#" + i + ": _routesCached[" + i + "] = " + temp);
 			_routesCached[i] = temp;
 			temp /= 2;
-			if(temp==0)
+			if (temp == 0) {
+				log2File("#" + i + "; breaking because temp=0");
 				break;
+			}
 		}
-		_routesCached[++i] = (int) (_setPoint.x - sum);
-		ROUTE_GRANULARITY = i+1;
-		Log.d(TAG, "calculated Route-Schedule[" + ROUTE_GRANULARITY + "] to: " + _routesCached);
-		_routeCachePointer=0;
+		_routesCached[i] = (int) (_setPoint.x - sum);
+		log2File("_routesCached[" + i + "] = " + _routesCached[i]);
+
+		ROUTE_GRANULARITY = i + 1;
+		log2File("calculated Route-Schedule[" + ROUTE_GRANULARITY + "] to: "
+				+ _routesCached);
+		_routeCachePointer = 0;
 	}
 
 	/**
-	 * calculates and returns a given amount in [°] using an multiplicative increase method
-	 * @return
-	 *  degrees which should be scheduled to the robot to be turned
+	 * calculates and returns a given amount in [°] using an multiplicative
+	 * increase method
+	 * 
+	 * @return degrees which should be scheduled to the robot to be turned
 	 */
 	private int getNextScheduledAngle() {
-		if(_degreesCached==null) {
+		log2File("in getNextScheduledAngle()");
+		if (_degreesCached == null) {
 			calculateDegreeSchedule();
 		}
-		
+
 		int _return = _degreesCached[_degreeCachePointer++];
-		Log.d(TAG, "Return new scheduled route: " + _return + "°");
+		log2File("Return new scheduled route: " + _return + "°");
 		return _return;
 	}
 
@@ -173,33 +230,46 @@ public class Level1 extends BaseIOIOLooper {
 	 * calculates a degree schedule
 	 */
 	private void calculateDegreeSchedule() {
-		Log.v(TAG, "In calculateDegreeSchedule()");
+		log2File("in calculateDegreeSchedule()");
 		_degreesCached = new int[DEGREE_GRANULARITY];
 		int temp = (int) (_setPoint.y / 2);
 		int sum = 0;
 		int i;
-		for(i=0;i<_degreesCached.length-1;i++) {
+		for (i = 0; i < _degreesCached.length - 1; i++) {
+			log2File("in calculateDegreeSchedule(), iteration #" + i);
 			sum += temp;
+
+			log2File("#" + i + ": _degreesCached[" + i + "] = " + temp);
 			_degreesCached[i] = temp;
 			temp /= 2;
-			if(temp==0)
+			if (temp == 0) {
+				log2File("#" + i + "; breaking because temp=0");
 				break;
+			}
 		}
-		_degreesCached[++i] = (int) (_setPoint.y - sum);
-		DEGREE_GRANULARITY = i+1;
-		Log.d(TAG, "calculated Turn-Schedule[" + DEGREE_GRANULARITY + "] to: " + _degreesCached);
-		_degreeCachePointer=0;
+
+		_degreesCached[i] = (int) (_setPoint.y - sum);
+		log2File("_degreesCached[" + i + "] = " + _degreesCached[i]);
+		DEGREE_GRANULARITY = i + 1;
+		log2File("calculated Turn-Schedule[" + DEGREE_GRANULARITY + "] to: "
+				+ _degreesCached);
+		_degreeCachePointer = 0;
 	}
 
 	/**
-	 * sets the setPoint to the current value
-	 * - this does not change the robot behavior when he is already moving/turning;
-	 *   but when a new schedule has to be planned, the current {@code setPoint} gonna be used for it
+	 * sets the setPoint to the current value - this does not change the robot
+	 * behavior when he is already moving/turning; but when a new schedule has
+	 * to be planned, the current {@code setPoint} gonna be used for it
 	 */
 	public void setSetPoint(Point setPoint) {
+		log2File("in setSetPoint()");
 		_setPoint = setPoint;
-		if(_fsmState==FsmState.IDLE)
+		if (_fsmState == FsmState.IDLE) {
+			log2File("Doing FSM state transition: IDLE=>TURNING");
 			_fsmState = FsmState.TURNING;
+		} else {
+			log2File("Robot not in IDLE ignoring setSetPoint");
+		}
 	}
 
 }

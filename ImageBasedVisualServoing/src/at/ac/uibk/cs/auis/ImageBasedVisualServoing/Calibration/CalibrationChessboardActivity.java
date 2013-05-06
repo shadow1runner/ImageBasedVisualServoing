@@ -62,12 +62,12 @@ public class CalibrationChessboardActivity extends Activity implements
 		// TODO give correct dimensions [1]
 		int dimX = 7;
 		int dimY = 7;
-		// TODO give correct offset [mm] (relative to robot position, which is at (0,0))
-		int dx = 150;
-		int dy = 150;
-		// TODO give correct dimensions of 1 square [mm] (measured on printed A4-sheet)
-		int lx = 50;
-		int ly = 50;
+		// TODO give correct offset [cm] (relative to robot position, which is at (0,0))
+		int dx = 25;
+		int dy = 15;
+		// TODO give correct dimensions of 1 square [cm] (measured on printed A4-sheet)
+		int lx = 2; // actually 2.05
+		int ly = 2; // actually 2.05
 
 		/*
 		(0,0) (0,1) .... (0,6)
