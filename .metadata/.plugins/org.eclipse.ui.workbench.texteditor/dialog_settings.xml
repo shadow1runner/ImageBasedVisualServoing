@@ -13,16 +13,16 @@
 		<item value="false" key="casesensitive"/>
 		<item value="false" key="incremental"/>
 		<item value="false" key="wholeword"/>
-		<item value="" key="selection"/>
+		<item value="veloc" key="selection"/>
 		<list key="findhistory">
-			<item value="blic Level0(Robot robot) {"/>
-			<item value="Robot"/>
-			<item value="createIOIOLooper"/>
-			<item value="runon"/>
-			<item value="Point"/>
-			<item value="oncreate"/>
-			<item value="intent"/>
-			<item value="onmanager"/>
+			<item value="veloc"/>
+			<item value="loop"/>
+			<item value="transition"/>
+			<item value="setpoint is"/>
+			<item value="_lint"/>
+			<item value="ontouch"/>
+			<item value="setup"/>
+			<item value="@Override"/>
 		</list>
 		<list key="replacehistory">
 		</list>

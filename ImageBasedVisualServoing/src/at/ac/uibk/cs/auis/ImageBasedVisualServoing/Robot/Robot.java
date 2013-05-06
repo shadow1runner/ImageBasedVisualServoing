@@ -1,5 +1,14 @@
 package at.ac.uibk.cs.auis.ImageBasedVisualServoing.Robot;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -10,209 +19,346 @@ import ioio.lib.api.TwiMaster;
 import ioio.lib.api.exception.ConnectionLostException;
 import ioio.lib.util.BaseIOIOLooper;
 
-public class Robot extends BaseIOIOLooper 
-{
-	private DigitalOutput _led;
+public class Robot extends BaseIOIOLooper {
+	//private DigitalOutput _led;
 	private PwmOutput _servo;
-	private DigitalInput _lint;
+	//private DigitalInput _lint;
 	private TwiMaster _twi;
-	private Handler _handler;	
-	
-	private static final String TAG = "Robot";
-	
+	private Handler _handler;
+
+	private static final String TAG = "Auis::Robot";
+
+	private static boolean append2File = false;
+	private static void log2File(String message) {
+		File root = Environment.getExternalStorageDirectory();
+		File file = new File(root, "robot.txt");
+		FileWriter filewriter;
+		try {
+			filewriter = new FileWriter(file, append2File);
+			if(append2File==false)
+				append2File = true;
+			BufferedWriter bufferedWriter = new BufferedWriter(filewriter);
+			DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss:SSS");
+
+			Date date = new Date();
+			bufferedWriter.write(dateFormat.format(date) + " by #" + Thread.currentThread().getId() + ": " + message
+					+ "\r\n");
+			bufferedWriter.close();
+			filewriter.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
 	private enum FsmState {
-		IDLE,
-		TURN_IN_PROGRESS,
-		MOVE_IN_PROGRESS
+		IDLE, TURN_IN_PROGRESS, MOVE_IN_PROGRESS
 	};
-	
+
 	private FsmState _fsmState = FsmState.IDLE;
 	private RobotPosition _origin;
 	private RobotPosition _prevCurrentPos;
 	private RobotPosition _currentPos;
-	private RobotPosition _setPoint;
-	
+	private RobotPosition _setPoint = new RobotPosition(0, 0, 0);
+
 	public Robot(Handler handler) {
+		log2File("In Robot-ctor");
+		log2File("assigning handler to _handler");
 		_handler = handler;
 	}
-	
+
 	/**
-	 * Called every time a connection with IOIO has been
-	 * established. Typically used to open pins.
+	 * Called every time a connection with IOIO has been established. Typically
+	 * used to open pins.
 	 * 
 	 * @throws ConnectionLostException
-	 *                 When IOIO connection is lost.
+	 *             When IOIO connection is lost.
 	 * 
 	 * @see ioio.lib.util.AbstractIOIOActivity.IOIOThread#setup()
 	 */
 	@Override
-	protected void setup() throws ConnectionLostException
-	{
-		_led = ioio_.openDigitalOutput(0, true);
-		_lint = ioio_.openDigitalInput(1, DigitalInput.Spec.Mode.PULL_UP); 
-		_twi = ioio_.openTwiMaster(1, TwiMaster.Rate.RATE_100KHz, false);
-		_servo = ioio_.openPwmOutput(10, 50);
-		_servo.setDutyCycle(0.0528f);
+	protected void setup() throws ConnectionLostException {
+		try {
+			log2File("in setup()");
+			Log.i(TAG, "in setup");
+
+			//log2File("opening leds");
+			//_led = ioio_.openDigitalOutput(0, true);
+
+			//log2File("opening lints");
+			//_lint = ioio_.openDigitalInput(1, DigitalInput.Spec.Mode.PULL_UP);
+
+			log2File("opening TwiMaster");
+			_twi = ioio_.openTwiMaster(1, TwiMaster.Rate.RATE_100KHz, false);
+
+			log2File("opening PWM-Output and setting duty cylce");
+			_servo = ioio_.openPwmOutput(10, 50);
+			_servo.setDutyCycle(0.0528f);
+		} catch (ConnectionLostException connectionLostException) {
+			log2File("connectionLostException caught in setup()");
+			log2File(connectionLostException.toString());
+		}
 	}
 
 	/**
 	 * Called repetitively while the IOIO is connected.
 	 * 
 	 * @throws ConnectionLostException
-	 *                 When IOIO connection is lost.
-	 * @throws InterruptedException 
+	 *             When IOIO connection is lost.
+	 * @throws InterruptedException
 	 * 
 	 * @see ioio.lib.util.AbstractIOIOActivity.IOIOThread#loop()
 	 */
 	@Override
-	public void loop() throws ConnectionLostException, InterruptedException
-	{
-		_led.write(true);
-		Thread.sleep(100);
+	public void loop() throws ConnectionLostException, InterruptedException {
+	
+		log2File("in loop()");
+		
+		try {
+			Thread.sleep(100);
 
-		int chkState = getSensorReadings();
-		_prevCurrentPos = _currentPos;
-		_currentPos = getRobotPosition();
-		Log.d(TAG, "Robot position: (" + _currentPos.xPos + ", " + _currentPos.yPos + "), " + _currentPos.anglePos + "°");
-		
-		Message message = new Message();
-		message.arg1 = chkState;
-		Log.d(TAG, "Sending message to handler with chkState=" + chkState);
-		_handler.sendMessage(message);
-		
-		if(setPointReached()) {
-			Log.i(TAG, "Robot reached setpoint: " + _currentPos);
-			_fsmState = FsmState.IDLE;
-		}
-		else if(_prevCurrentPos.equals(_currentPos)) {
-			Log.e(TAG, "Robot has not moved in this iteration: " + _currentPos);
-		}
-		
-		synchronized(_fsmState)
-		{
-			switch(_fsmState) {
-			case IDLE: break;
-			case MOVE_IN_PROGRESS: 
-				Log.d(TAG, "Robot still moving: " + _currentPos + ", setPoint is: " + _setPoint);
-				break;
-			case TURN_IN_PROGRESS: 
-				Log.d(TAG, "Robot still turning: " + _currentPos + ", setPoint is: " + _setPoint);
-				break;
+			int chkState = getSensorReadings();
+			_prevCurrentPos = _currentPos;
+			_currentPos = getRobotPosition();
+			log2File("Robot position: (" + _currentPos.xPos + ", " + _currentPos.yPos + "), " + _currentPos.anglePos + "°");
+			Log.d(TAG, "Robot position: (" + _currentPos.xPos + ", " + _currentPos.yPos + "), " + _currentPos.anglePos + "°");
+
+			Message message = new Message();
+			message.arg1 = chkState;
+			log2File("Sending message to handler with chkState=" + chkState);
+			Log.d(TAG, "Sending message to handler with chkState=" + chkState);
+			_handler.sendMessage(message);
+
+			if (setPointReached()) {
+				log2File("Robot reached setpoint: " + _currentPos);
+				Log.i(TAG, "Robot reached setpoint: " + _currentPos);
+				
+				log2File("doing FSM-state transition: IDLE");
+				_fsmState = FsmState.IDLE;
+			} else if (_prevCurrentPos.equals(_currentPos)) {
+				log2File("Robot has not moved in this iteration: " + _currentPos);
+				Log.e(TAG, "Robot has not moved in this iteration: " + _currentPos);
+				
+				log2File("doing FSM-state transition: IDLE");
+				_fsmState=FsmState.IDLE;
 			}
-		}
 
-		_led.write(false);
-		Thread.sleep(100);
+			synchronized (_fsmState) {
+				switch (_fsmState) {
+				case IDLE:
+					log2File("robot in IDLE-mode");
+					break;
+				case MOVE_IN_PROGRESS:
+					log2File("Robot in MOVE_IN_PROGRESS-mode\\r\\nRobot still moving: "
+							+ _currentPos + ", setPoint is: " + _setPoint);
+					Log.d(TAG, "Robot still moving: " + _currentPos
+							+ ", setPoint is: " + _setPoint);
+					break;
+				case TURN_IN_PROGRESS:
+					if(_prevCurrentPos.equals(_currentPos)) {
+						// robot has not moved in this iteration, i.e. robot has stopped => doing state transition
+						
+					}
+					log2File("Robot in TURN_IN_PROGRESS-mode\\r\\Robot still turning: "
+							+ _currentPos + ", setPoint is: " + _setPoint);
+					Log.d(TAG, "Robot still turning: " + _currentPos
+							+ ", setPoint is: " + _setPoint);
+					break;
+				}
+			}
+
+			Thread.sleep(100);
+		} catch (ConnectionLostException connectionLostException) {
+			log2File("connectionLostException caught in loop()");
+			log2File(connectionLostException.getStackTrace().toString());
+		} catch (InterruptedException interruptedException) {
+			log2File("interruptedException caught in loop()");
+			log2File(interruptedException.getStackTrace().toString());
+		}
 	}
 
 	private boolean setPointReached() {
+		log2File("in setPointReached()");
 		return _setPoint.equals(_currentPos);
 	}
 
-	private int getSensorReadings() throws ConnectionLostException, InterruptedException {
-		/* get sensor readings */
-		byte[] request = new byte[] { 0x10 };	//get sensors
-		byte[] response = new byte[8];				
-		synchronized(_twi)
-		{
-			Log.v("I2C", "ret = " + _twi.writeRead(0x69, false, request, request.length, response, response.length));
+	private int getSensorReadings() throws ConnectionLostException,
+			InterruptedException {
+		try {
+			log2File("in getSensorReadings()");
+
+			/* get sensor readings */
+			byte[] request = new byte[] { 0x10 }; // get sensors
+			byte[] response = new byte[8];
+
+			log2File("reading sensor-values");
+			synchronized (_twi) {
+				if(_twi.writeRead(0x69, false, request, request.length, response, response.length)) {
+					log2File("I2C: read sensor-values successfully:" + response[0]);
+				} else {
+					log2File("I2C: read sensor-values NOT successfully!");
+				}
+			}
+			return response[0];
+		} catch (ConnectionLostException connectionLostException) {
+			log2File("connectionLostException caught in getSensorReadings()");
+			log2File(connectionLostException.getStackTrace().toString());
+		} catch (InterruptedException interruptedException) {
+			log2File("interruptedException caught in getSensorReadings()");
+			log2File(interruptedException.getStackTrace().toString());
 		}
-		return response[0];
+		return -1;
 	}
 
-	private RobotPosition getRobotPosition() throws ConnectionLostException, InterruptedException {
-		byte[] request = new byte[] { 0x1A };	//get velocity
-		byte[] response = new byte[8];
-		
-		/* get velocity */
-		request[0] = 0x1A;		//get velocity
-		synchronized(_twi)
-		{
-			Log.v("I2C", "ret = " + _twi.writeRead(0x69, false, request, request.length, response, 2));
-		}
-		
-		/* get position */
-		request[0] = 0x1B;		//get position
-		synchronized(_twi)
-		{
-			Log.v("I2C", "ret = " + _twi.writeRead(0x69, false, request, request.length, response, 6));
-		}
-		RobotPosition robotPosition = new RobotPosition();
-		robotPosition.xPos = (short) (((response[1] & 0xFF) << 8) | (response[0] & 0xFF));
-		robotPosition.yPos = (short) (((response[3] & 0xFF) << 8) | (response[2] & 0xFF));
-		robotPosition.anglePos = (short) (((response[5] & 0xFF) << 8) | (response[4] & 0xFF));
-		return robotPosition;
-	}
-	
-	public void move(int cm) throws ConnectionLostException, InterruptedException {
-		synchronized(_fsmState)
-		{
-			if(_fsmState!=FsmState.IDLE) {
-				throw new IllegalStateException();
+	private RobotPosition getRobotPosition() throws ConnectionLostException,
+			InterruptedException {
+		try {
+			log2File("in getRobotPosition()");
+
+			byte[] request = new byte[] { 0x1A }; // get velocity
+			byte[] response = new byte[8];
+
+			log2File("reading velocity from twi");
+			/* get velocity */
+			request[0] = 0x1A; // get velocity
+			synchronized (_twi) {				
+				if(_twi.writeRead(0x69, false, request, request.length, response, 2)) {
+					log2File("I2C: read velocity successfully:" + response[0]);
+				} else {
+					log2File("I2C: read velocity NOT successfully!");
+				}
 			}
+
+			log2File("reading position from twi");
+			/* get position */
+			request[0] = 0x1B; // get position
+			synchronized (_twi) {
+				
+				if(_twi.writeRead(0x69, false, request, request.length, response, 6)) {
+					log2File("I2C: read position successfully:" + response[0]);
+				} else {
+					log2File("I2C: read position NOT successfully!");
+				}
+			}
+			RobotPosition robotPosition = new RobotPosition();
+			robotPosition.xPos = (short) (((response[1] & 0xFF) << 8) | (response[0] & 0xFF));
+			robotPosition.yPos = (short) (((response[3] & 0xFF) << 8) | (response[2] & 0xFF));
+			robotPosition.anglePos = (short) (((response[5] & 0xFF) << 8) | (response[4] & 0xFF));
+
+			log2File("Current robotPosition is: " + robotPosition);
+			return robotPosition;
+		} catch (ConnectionLostException connectionLostException) {
+			log2File("connectionLostException caught in getRobotPosition()");
+			log2File(connectionLostException.getStackTrace().toString());
+		} catch (InterruptedException interruptedException) {
+			log2File("interruptedException caught in getRobotPosition()");
+			log2File(interruptedException.getStackTrace().toString());
 		}
+		return new RobotPosition();
+	}
+
+	public void move(int cm) throws ConnectionLostException,
+			InterruptedException {
 		
-		_origin = getRobotPosition();
-		RobotPosition offset = new RobotPosition();
-		offset.xPos = cm;
-		_setPoint = _origin.Add(offset);
-		
-		move_Internal(offset);
-		synchronized(_fsmState)
-		{
-			_fsmState = FsmState.MOVE_IN_PROGRESS;
+		try {
+			log2File("in move(" + cm + "cm");
+
+			synchronized (_fsmState) {
+				if (_fsmState != FsmState.IDLE) {
+					log2File("robot not in idle mode => ignored");
+					// throw new IllegalStateException(); // ignored, as user e.g. can touch more than once
+				}
+			}
+
+			_origin = getRobotPosition();
+			RobotPosition offset = new RobotPosition();
+			offset.xPos = cm;
+			_setPoint = _origin.Add(offset);
+
+			log2File("Calling move_internal with " + offset);
+			move_Internal(offset);
+			synchronized (_fsmState) {
+				_fsmState = FsmState.MOVE_IN_PROGRESS;
+				log2File("doing FSM-state transition: MOVE_IN_PROGRESS");
+			}
+
+		} catch (ConnectionLostException connectionLostException) {
+			log2File("connectionLostException caught in move()");
+			log2File(connectionLostException.getStackTrace().toString());
+		} catch (InterruptedException interruptedException) {
+			log2File("interruptedException caught in move()");
+			log2File(interruptedException.getStackTrace().toString());
 		}
 	}
-	
-	private void move_Internal(RobotPosition offset) throws ConnectionLostException, InterruptedException {
+
+	private void move_Internal(RobotPosition offset)
+			throws ConnectionLostException, InterruptedException {
+		log2File("in move_Internal with offset: " + offset);
+
 		/* drive request[1] (in cm) forward */
 		byte[] request = new byte[2];
 		byte[] response = new byte[1];
-		
-		request[0] = 0x1C;	//cmd
+
+		request[0] = 0x1C; // cmd
 		request[1] = (byte) offset.xPos;
 
-		synchronized(_twi)
-		{
-			Log.v("I2C", "ret = " + _twi.writeRead(0x69, false, request, request.length, response, 0));
-		}		
+		synchronized (_twi) {
+			Log.v("I2C",
+					"ret = "
+							+ _twi.writeRead(0x69, false, request,
+									request.length, response, 0));
+		}
+		log2File("move_Internal finished successfully");
 	}
-	
-	public void rotate(int degree) throws ConnectionLostException, InterruptedException {
-		synchronized(_fsmState)
-		{
-			if(_fsmState!=FsmState.IDLE) {
-				throw new IllegalStateException();
+
+	public void rotate(int degree) throws ConnectionLostException,
+			InterruptedException {
+		log2File("in rotate, with degrees: " + degree);
+
+		synchronized (_fsmState) {
+			if (_fsmState != FsmState.IDLE) {
+				log2File("robot not in idle mode => ignored");
+				//throw new IllegalStateException(); // ignored, as user e.g. can touch more than once
 			}
 		}
-		
+
 		_origin = getRobotPosition();
+		log2File("rotate: _origin determined to: " + _origin);
 		RobotPosition offset = new RobotPosition();
 		offset.anglePos = degree;
 		_setPoint = _origin.Add(offset);
-		
+		log2File("rotate: _setPoint determined to: " + _setPoint);
+
+		log2File("Calling rotate_Internal with " + offset);
 		rotate_Internal(offset);
-		synchronized(_fsmState)
-		{
+		synchronized (_fsmState) {
 			_fsmState = FsmState.TURN_IN_PROGRESS;
+			log2File("doing FSM-state transition: TURN_IN_PROGRESS");
 		}
 	}
-	
-	public void rotate_Internal(RobotPosition offset) throws ConnectionLostException, InterruptedException {
+
+	public void rotate_Internal(RobotPosition offset)
+			throws ConnectionLostException, InterruptedException {
+		log2File("in rotate_Internal with offset: " + offset);
+
 		/* turn request[1] (in degree) */
 		byte[] request = new byte[2];
 		byte[] response = new byte[0];
-		
-		request[0] = 0x1D;	//cmd
-		request[1] = (byte) offset.anglePos; 
 
-		synchronized(_twi)
-		{
-			Log.v("I2C", "ret = " + _twi.writeRead(0x69, false, request, request.length, response, response.length));
+		request[0] = 0x1D; // cmd
+		request[1] = (byte) offset.anglePos;
+
+		synchronized (_twi) {
+			Log.v("I2C",
+					"ret = "
+							+ _twi.writeRead(0x69, false, request,
+									request.length, response, response.length));
 		}
+		log2File("rotate_Internal finished successfully");
 	}
 
-	public boolean workInProgress(){
-		return _fsmState!=FsmState.IDLE;
+	public boolean workInProgress() {
+		log2File("in workInProgress");
+		return _fsmState != FsmState.IDLE;
 	}
 }

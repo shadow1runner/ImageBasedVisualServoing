@@ -7,6 +7,16 @@ public class RobotPosition {
 	
 	public int anglePos;
 	
+	public RobotPosition(int xPos, int yPos, int anglePos) {
+		super();
+		this.xPos = xPos;
+		this.yPos = yPos;
+		this.anglePos = anglePos;
+	}
+
+	public RobotPosition() {
+	}
+
 	/**
 	 * calculate this+rhs using, returning a <b>new</b> RobotPosition
 	 * @param rhs

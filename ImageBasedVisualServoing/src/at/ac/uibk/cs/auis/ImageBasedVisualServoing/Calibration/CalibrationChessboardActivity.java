@@ -53,34 +53,34 @@ public class CalibrationChessboardActivity extends Activity implements
 	private CalibrationHelper calibrationHelper;
 	
 	public CalibrationChessboardActivity() {
-		List<Point> worldCoordinates = new ArrayList<Point>();
-		// TODO calculate right points
-		for(int i=0;i<7*7;i++) {
-			worldCoordinates.add(new Point(i, i));
-		}
 //		List<Point> worldCoordinates = new ArrayList<Point>();
-//		// TODO give correct dimensions [1]
-//		int dimX = 7;
-//		int dimY = 7;
-//		// TODO give correct offset [mm] (relative to robot position, which is at (0,0))
-//		int dx = 150;
-//		int dy = 30;
-//		// TODO give correct dimensions of 1 square [mm] (measured on printed A4-sheet)
-//		int lx = 30;
-//		int ly = 30;
-//
-//		/*
-//		(0,0) (0,1) .... (0,6)
-//		   .
-//		   .
-//		   .
-//		(6,0) (6,1) .... (6,6)
-//		*/
-//		for(int i=0;i<dimY;i++) {
-//		      for(int j=0;j<dimX;j++) {
-//		            worldCoordinates.add(new Point(dx-i*lx, dy+j*ly));         
-//		      }
+//		// TODO calculate right points
+//		for(int i=0;i<8;i++) {
+//			worldCoordinates.add(new Point(i, i));
 //		}
+		List<Point> worldCoordinates = new ArrayList<Point>();
+		// TODO give correct dimensions [1]
+		int dimX = 7;
+		int dimY = 7;
+		// TODO give correct offset [mm] (relative to robot position, which is at (0,0))
+		int dx = 150;
+		int dy = 150;
+		// TODO give correct dimensions of 1 square [mm] (measured on printed A4-sheet)
+		int lx = 50;
+		int ly = 50;
+
+		/*
+		(0,0) (0,1) .... (0,6)
+		   .
+		   .
+		   .
+		(6,0) (6,1) .... (6,6)
+		*/
+		for(int i=0;i<dimY;i++) {
+		      for(int j=0;j<dimX;j++) {
+		            worldCoordinates.add(new Point(dx-i*lx, dy+j*ly));         
+		      }
+		}
 
 		
 		calibrationHelper = new CalibrationHelper(worldCoordinates);

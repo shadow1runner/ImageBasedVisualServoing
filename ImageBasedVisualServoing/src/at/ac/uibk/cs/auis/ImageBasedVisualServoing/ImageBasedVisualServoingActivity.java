@@ -1,10 +1,15 @@
 package at.ac.uibk.cs.auis.ImageBasedVisualServoing;
 
+import ioio.lib.api.exception.ConnectionLostException;
+import ioio.lib.util.IOIOLooper;
+import ioio.lib.util.android.IOIOActivity;
+
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+
 import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.CameraBridgeViewBase;
 import org.opencv.android.CameraBridgeViewBase.CvCameraViewFrame;
@@ -18,9 +23,6 @@ import org.opencv.core.Point;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
-
-import ioio.lib.util.IOIOLooper;
-import ioio.lib.util.android.IOIOActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -36,26 +38,23 @@ import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.WindowManager;
 import android.widget.Toast;
-
-import at.ac.uibk.cs.auis.ImageBasedVisualServoing.R;
 import at.ac.uibk.cs.auis.ImageBasedVisualServoing.Calibration.CalibrationActivity;
 import at.ac.uibk.cs.auis.ImageBasedVisualServoing.Calibration.CalibrationChessboardActivity;
 import at.ac.uibk.cs.auis.ImageBasedVisualServoing.Common.CalibrationHelper;
 import at.ac.uibk.cs.auis.ImageBasedVisualServoing.Common.DrawHelper;
 import at.ac.uibk.cs.auis.ImageBasedVisualServoing.Robot.Robot;
-import at.ac.uibk.cs.auis.ImageBasedVisualServoing.Robot.SubsumptionArchiteture.Level1;
 import at.ac.uibk.cs.auis.Tracker.ColorBasedTracker;
 import at.ac.uibk.cs.auis.Tracker.TrackerHelper;
 
 /**
- * Activity is used for implementing ImageBasedVisualServoing
- * This activity gets a matrix which is used for calculating
- * pixel coordinates to world-coordinates
+ * Activity is used for implementing ImageBasedVisualServoing This activity gets
+ * a matrix which is used for calculating pixel coordinates to world-coordinates
+ * 
  * @author Helmut Wolf
- *
+ * 
  */
 public class ImageBasedVisualServoingActivity extends IOIOActivity implements
-		CvCameraViewListener2, OnTouchListener  {
+		CvCameraViewListener2, OnTouchListener {
 	private static final String TAG = "Auis::ImageBasedVisualServoingActivity";
 
 	private CameraBridgeViewBase mOpenCvCameraView;
@@ -66,15 +65,16 @@ public class ImageBasedVisualServoingActivity extends IOIOActivity implements
 	private MenuItem CreateCalibrationChessboardMenuItem;
 	private MenuItem SerializeCalibrationMenuItem;
 	private MenuItem LoadCalibrationMenuItem;
-	
+
 	private ColorBasedTracker colorBasedTracker = new ColorBasedTracker();
 	private TrackerHelper trackerHelper = new TrackerHelper();
-	
+
 	private CalibrationHelper calibrationHelper;
-	
-	private static final Scalar INDICATING_COLOR = new Scalar(0xbf, 0xfe, 0x00, 0x00);	
+
+	private static final Scalar INDICATING_COLOR = new Scalar(0xbf, 0xfe, 0x00,
+			0x00);
 	private boolean isTrackingColorSet = false;
-	
+
 	private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
 		@Override
 		public void onManagerConnected(int status) {
@@ -82,7 +82,8 @@ public class ImageBasedVisualServoingActivity extends IOIOActivity implements
 			case LoaderCallbackInterface.SUCCESS: {
 				Log.i(TAG, "OpenCV loaded successfully");
 				mOpenCvCameraView.enableView();
-				mOpenCvCameraView.setOnTouchListener(ImageBasedVisualServoingActivity.this);
+				mOpenCvCameraView
+						.setOnTouchListener(ImageBasedVisualServoingActivity.this);
 			}
 				break;
 			default: {
@@ -93,14 +94,62 @@ public class ImageBasedVisualServoingActivity extends IOIOActivity implements
 		}
 	};
 
-	// ------------------------------------------ ANDROID LIFECYLCE ------------------------------------------
-	
+	// ------------------------------------------ ANDROID LIFECYLCE
+	// ------------------------------------------
+
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		Log.i(TAG, "called onCreate");
 		super.onCreate(savedInstanceState);
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
+		// Log.i(TAG, "calling logcat-activity");
+		// Intent logCatIntent = new
+		// Intent(ImageBasedVisualServoingActivity.this, LoggingActivity.class);
+		// startActivity(logCatIntent);
+		// new Thread(new Runnable() {
+		//
+		// @Override
+		// public void run() {
+		// try {
+		// boolean append = false;
+		//
+		// while (true) {
+		// Process process = Runtime.getRuntime()
+		// .exec("logcat -d");
+		// BufferedReader bufferedReader = new BufferedReader(
+		// new InputStreamReader(process.getInputStream()));
+		//
+		// String line;
+		//
+		// File root = Environment.getExternalStorageDirectory();
+		// File file = new File(root, "tomato50.txt");
+		// FileWriter filewriter = new FileWriter(file, append);
+		// if (append = false)
+		// append = true;
+		// BufferedWriter bufferedWriter = new BufferedWriter(
+		// filewriter);
+		// DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+		//
+		// while ((line = bufferedReader.readLine()) != null) {
+		// Date date = new Date();
+		// bufferedWriter.write(dateFormat.format(date) + " " + line
+		// +"\r\n\r\n");
+		// bufferedWriter.flush();
+		// }
+		// bufferedWriter.close();
+		// filewriter.close();
+		//
+		// Log.e(TAG, "logfile closed");
+		// }
+		//
+		// } catch (IOException e) {
+		// }
+		// }
+		// }).start();
+		//
+		// Log.i(TAG, "after calling logcat-activity");
 
 		setContentView(R.layout.image_based_visual_servoing_view);
 		mOpenCvCameraView = (CameraBridgeViewBase) findViewById(R.id.camera_view);
@@ -111,22 +160,24 @@ public class ImageBasedVisualServoingActivity extends IOIOActivity implements
 				mOpenCvCameraView.setClickable(false);
 			}
 		});
-		
-		
+
 		Bundle b = getIntent().getExtras();
-		if(b==null) {
-			Log.e(TAG, "unable to get CalibrationHelper from intent-invocation, exiting");
-//			Intent intent = new Intent(Intent.ACTION_MAIN);
-//			intent.addCategory(Intent.CATEGORY_HOME);
-//			intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//			startActivity(intent);
-//			finish();
+		if (b == null) {
+			Log.e(TAG,
+					"unable to get CalibrationHelper from intent-invocation, exiting");
+			// Intent intent = new Intent(Intent.ACTION_MAIN);
+			// intent.addCategory(Intent.CATEGORY_HOME);
+			// intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+			// startActivity(intent);
+			// finish();
 		}
-		
-		Log.i(TAG, "trying to get a CalibrationHelper passed as argument on intent-invocation");
+
+		Log.i(TAG,
+				"trying to get a CalibrationHelper passed as argument on intent-invocation");
 		Intent i = getIntent();
-		calibrationHelper = (CalibrationHelper) i.getParcelableExtra("calibrationHelper");
-		if(calibrationHelper==null)
+		calibrationHelper = (CalibrationHelper) i
+				.getParcelableExtra("calibrationHelper");
+		if (calibrationHelper == null)
 			Log.e(TAG, "unable to get calibrationHelper");
 		else
 			Log.e(TAG, "Got calibrationHelper successfully");
@@ -152,87 +203,103 @@ public class ImageBasedVisualServoingActivity extends IOIOActivity implements
 		if (mOpenCvCameraView != null)
 			mOpenCvCameraView.disableView();
 	}
-	// ------------------------------------------ /ANDROID LIFECYLCE ------------------------------------------
-	
-	// ------------------------------------------ MENU-MANAGEMENT & -HANDLING ------------------------------------------
+
+	// ------------------------------------------ /ANDROID LIFECYLCE
+	// ------------------------------------------
+
+	// ------------------------------------------ MENU-MANAGEMENT & -HANDLING
+	// ------------------------------------------
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		CreateCalibrationMenuItem = menu.add("Calibrate");
-		CreateCalibrationChessboardMenuItem = menu.add("Calibrate with chessboard");
-		SerializeCalibrationMenuItem = menu.add("Serialize current calibration");
+		CreateCalibrationChessboardMenuItem = menu
+				.add("Calibrate with chessboard");
+		SerializeCalibrationMenuItem = menu
+				.add("Serialize current calibration");
 		LoadCalibrationMenuItem = menu.add("Load current calibration");
 		return true;
 	}
-	
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		Log.i(TAG, "called onOptionsItemSelected; selected item: " + item);
-		if(item==CreateCalibrationMenuItem) {
-			Log.i(TAG, "CreateCalibrationMenuItem has been clicked, invoking calibration intent");
-			Intent calibrateIntent = new Intent(ImageBasedVisualServoingActivity.this, CalibrationActivity.class);
-	        startActivity(calibrateIntent);
-		} else if(item==CreateCalibrationChessboardMenuItem) {
-			Log.i(TAG, "CreateCalibrationChessboardMenuItem has been clicked, invoking calibration via chessboard intent");
-			Intent calibrateIntent = new Intent(ImageBasedVisualServoingActivity.this, CalibrationChessboardActivity.class);
-	        startActivity(calibrateIntent);
-		} else if(item==SerializeCalibrationMenuItem) {
+		if (item == CreateCalibrationMenuItem) {
+			Log.i(TAG,
+					"CreateCalibrationMenuItem has been clicked, invoking calibration intent");
+			Intent calibrateIntent = new Intent(
+					ImageBasedVisualServoingActivity.this,
+					CalibrationActivity.class);
+			startActivity(calibrateIntent);
+		} else if (item == CreateCalibrationChessboardMenuItem) {
+			Log.i(TAG,
+					"CreateCalibrationChessboardMenuItem has been clicked, invoking calibration via chessboard intent");
+			Intent calibrateIntent = new Intent(
+					ImageBasedVisualServoingActivity.this,
+					CalibrationChessboardActivity.class);
+			startActivity(calibrateIntent);
+		} else if (item == SerializeCalibrationMenuItem) {
 			Log.i(TAG, "SerializeCalibrationMenuItem has been clicked");
 			SerializeCalibration();
-		} else if(item==LoadCalibrationMenuItem) {
+		} else if (item == LoadCalibrationMenuItem) {
 			Log.i(TAG, "LoadCalibrationMenuItem has been clicked");
 			DeSerializeCalibration();
 		} else {
-			Log.e(TAG, "Invalid MenuItem has been clicked, quitting to home screen");
+			Log.e(TAG,
+					"Invalid MenuItem has been clicked, quitting to home screen");
 			Intent startMain = new Intent(Intent.ACTION_MAIN);
-	        startMain.addCategory(Intent.CATEGORY_HOME);
-	        startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-	        startActivity(startMain);
+			startMain.addCategory(Intent.CATEGORY_HOME);
+			startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+			startActivity(startMain);
 		}
 		return true;
 	}
-	// ------------------------------------------ /MENU MANAGEMENT & HANDLING ------------------------------------------
 
-	// ------------------------------------------ HANDLER ------------------------------------------
-	Handler _handler = new Handler()
-	{
-		int i=12;
-		
+	// ------------------------------------------ /MENU MANAGEMENT & HANDLING
+	// ------------------------------------------
+
+	// ------------------------------------------ HANDLER
+	// ------------------------------------------
+	Handler _handler = new Handler() {
+		int i = 12;
+
 		@Override
-		public void handleMessage(Message msg)
-		{
+		public void handleMessage(Message msg) {
 			int chkState = msg.arg1;
-			
-			if((chkState & (1<<5)) != 0)
-			{
-				//badhack
-				if(i++ > 12)
-				{
-					Toast.makeText(getApplicationContext(), "Overheat", Toast.LENGTH_SHORT).show();
+
+			if ((chkState & (1 << 5)) != 0) {
+				// badhack
+				if (i++ > 12) {
+					Toast.makeText(getApplicationContext(), "Overheat",
+							Toast.LENGTH_SHORT).show();
 					i = 0;
 				}
-			}
-			else
-			{
+			} else {
 				i = 12;
 			}
 		}
 	};
-	// ------------------------------------------ /HANDLER ------------------------------------------
 
-	// ------------------------------------------ IOIO MANAGEMENT ------------------------------------------
+	// ------------------------------------------ /HANDLER
+	// ------------------------------------------
+
+	// ------------------------------------------ IOIO MANAGEMENT
+	// ------------------------------------------
 	/**
 	 * A method to create our IOIO thread.
 	 * 
 	 * @see ioio.lib.util.AbstractIOIOActivity#createIOIOThread()
 	 */
 	@Override
-	protected IOIOLooper createIOIOLooper()
-	{
+	protected IOIOLooper createIOIOLooper() {
+		Log.d(TAG, "in createIOIOLooper()");
 		return _robot;
 	}
-	// ------------------------------------------ /IOIO MANAGEMENT ------------------------------------------
-	
-	// ------------------------------------------ CAMERA MANAGEMENT ------------------------------------------
+
+	// ------------------------------------------ /IOIO MANAGEMENT
+	// ------------------------------------------
+
+	// ------------------------------------------ CAMERA MANAGEMENT
+	// ------------------------------------------
 	public void onCameraViewStarted(int width, int height) {
 	}
 
@@ -240,124 +307,172 @@ public class ImageBasedVisualServoingActivity extends IOIOActivity implements
 	}
 
 	public Mat onCameraFrame(CvCameraViewFrame inputFrame) {
-		
+
 		Mat rgba = inputFrame.rgba();
-		
-		if(isTrackingColorSet) {
+
+		if (isTrackingColorSet) {
 			hsv = new Mat();
 			Imgproc.cvtColor(rgba, hsv, Imgproc.COLOR_RGB2HSV_FULL);
-			
+
 			Point[] lowestPoints = null;
 			try {
-				//lowestPoints = colorBasedTracker.getLowestBoundOfContours(hsv, 2); // 2 beacons SHOULD be in view
-				lowestPoints = colorBasedTracker.getLowestBoundOfContours(hsv, 1); // 2 beacons SHOULD be in view
-				
+				// lowestPoints =
+				// colorBasedTracker.getLowestBoundOfContours(hsv, 2); // 2
+				// beacons SHOULD be in view
+				lowestPoints = colorBasedTracker.getLowestBoundOfContours(hsv,
+						1); // 2 beacons SHOULD be in view
+
 			} catch (IllegalArgumentException e) {
 			}
-			
-			for(Point point : lowestPoints) {
-				rgba = DrawHelper.drawPoint(rgba, point, new Scalar(0xFF, 0x00, 0x00, 0x00));
+
+			for (Point point : lowestPoints) {
+				rgba = DrawHelper.drawPoint(rgba, point, new Scalar(0xFF, 0x00,
+						0x00, 0x00));
 			}
-			
-			for(Rect rect : colorBasedTracker.getBoundingRects())
+
+			for (Rect rect : colorBasedTracker.getBoundingRects())
 				rgba = DrawHelper.drawRectangle(rgba, rect, INDICATING_COLOR);
 		} else {
-			hsv=rgba;
+			hsv = rgba;
 		}
-		
+
 		return rgba;
 	}
-	// ------------------------------------------ /CAMERA MANAGEMENT ------------------------------------------
-	
-	// ------------------------------------------ ROBOT MANAGEMENT ------------------------------------------
-	private Level1 _robot = new Level1(new Robot(_handler));
-	// ------------------------------------------ /ROBOT MANAGEMENT ------------------------------------------	
-	
-	// ------------------------------------------ SERIALIZATION ------------------------------------------
+
+	// ------------------------------------------ /CAMERA MANAGEMENT
+	// ------------------------------------------
+
+	// ------------------------------------------ ROBOT MANAGEMENT
+	// ------------------------------------------
+	// private Level1 _robot = new Level1(new Robot(_handler));
+	private Robot _robot = new Robot(_handler);
+
+	// ------------------------------------------ /ROBOT MANAGEMENT
+	// ------------------------------------------
+
+	// ------------------------------------------ SERIALIZATION
+	// ------------------------------------------
 	private void SerializeCalibration() {
-		if(calibrationHelper==null) {
+		if (calibrationHelper == null) {
 			Log.e(TAG, "No calibration data to be serialized");
-			Toast.makeText(getApplicationContext(), "Camera has not yet been calibrated.", Toast.LENGTH_LONG).show();
+			Toast.makeText(getApplicationContext(),
+					"Camera has not yet been calibrated.", Toast.LENGTH_LONG)
+					.show();
 		}
-		
+
 		try {
-			FileOutputStream fos = getApplicationContext().openFileOutput("calibrationHelper.bndl", getApplicationContext().MODE_PRIVATE);
+			FileOutputStream fos = getApplicationContext().openFileOutput(
+					"calibrationHelper.bndl",
+					getApplicationContext().MODE_PRIVATE);
 			ObjectOutputStream oos = new ObjectOutputStream(fos);
 			oos.writeObject(calibrationHelper);
 			oos.flush();
 			oos.close();
-			Toast.makeText(getApplicationContext(), "Calibration-data saved successfully", Toast.LENGTH_LONG).show();
+			Toast.makeText(getApplicationContext(),
+					"Calibration-data saved successfully", Toast.LENGTH_LONG)
+					.show();
 		} catch (IOException e) {
-			Log.e(TAG, "IOExcpetion occurded during saving the calibration-data", e);
-			Toast.makeText(getApplicationContext(), "Unable to save data", Toast.LENGTH_LONG).show();
+			Log.e(TAG,
+					"IOExcpetion occurded during saving the calibration-data",
+					e);
+			Toast.makeText(getApplicationContext(), "Unable to save data",
+					Toast.LENGTH_LONG).show();
 		}
 	}
-	
+
 	private void DeSerializeCalibration() {
 		try {
-			FileInputStream fis = getApplicationContext().openFileInput("calibrationHelper.bndl");
+			FileInputStream fis = getApplicationContext().openFileInput(
+					"calibrationHelper.bndl");
 			ObjectInputStream ois = new ObjectInputStream(fis);
 			calibrationHelper = (CalibrationHelper) ois.readObject();
 			ois.close();
-			Toast.makeText(getApplicationContext(), "Calibration-data loaded successfully", Toast.LENGTH_LONG).show();
+			Toast.makeText(getApplicationContext(),
+					"Calibration-data loaded successfully", Toast.LENGTH_LONG)
+					.show();
 		} catch (ClassNotFoundException cnf) {
-			Log.e(TAG, "ClassNotFoundException occured during saving the calibration-data", cnf);
-			Toast.makeText(getApplicationContext(), "Dev-error: Unable to load data - contact developer", Toast.LENGTH_LONG).show();
+			Log.e(TAG,
+					"ClassNotFoundException occured during saving the calibration-data",
+					cnf);
+			Toast.makeText(getApplicationContext(),
+					"Dev-error: Unable to load data - contact developer",
+					Toast.LENGTH_LONG).show();
 		} catch (IOException e) {
-			Log.e(TAG, "IOExcpetion occured during saving the calibration-data", e);
-			Toast.makeText(getApplicationContext(), "Unable to load data", Toast.LENGTH_LONG).show();
+			Log.e(TAG,
+					"IOExcpetion occured during saving the calibration-data", e);
+			Toast.makeText(getApplicationContext(), "Unable to load data",
+					Toast.LENGTH_LONG).show();
 		}
 	}
-	// ------------------------------------------ SERIALIZATION ------------------------------------------
+
+	// ------------------------------------------ SERIALIZATION
+	// ------------------------------------------
 
 	@Override
 	public boolean onTouch(View v, MotionEvent event) {
-	    int cols = hsv.cols();
-        int rows = hsv.rows();
+		int cols = hsv.cols();
+		int rows = hsv.rows();
 
-        int xOffset = (mOpenCvCameraView.getWidth() - cols) / 2;
-        int yOffset = (mOpenCvCameraView.getHeight() - rows) / 2;
+		int xOffset = (mOpenCvCameraView.getWidth() - cols) / 2;
+		int yOffset = (mOpenCvCameraView.getHeight() - rows) / 2;
 
-        int x = (int)event.getX() - xOffset;
-        int y = (int)event.getY() - yOffset;
+		int x = (int) event.getX() - xOffset;
+		int y = (int) event.getY() - yOffset;
 
-        Log.i(TAG, "Touch image coordinates: (" + x + ", " + y + ")");
+		Log.i(TAG, "Touch image coordinates: (" + x + ", " + y + ")");
 
-        if ((x < 0) || (y < 0) || (x > cols) || (y > rows))
-        	return false;
+		if ((x < 0) || (y < 0) || (x > cols) || (y > rows))
+			return false;
 
-        Point groundPlane = calculateGroundPlaneCoordinates(new Point(x, y));
-        
-        Log.i(TAG, "Ground plane coordinates: (" + groundPlane.x + ", " + groundPlane.y + ")");
-        
-        colorBasedTracker.setColorForTrackingHSV(trackerHelper.calcColorForTracking(hsv, new Point(x,y)));
-        isTrackingColorSet = true;
-        
-        _robot.setSetPoint(groundPlane);
-        
-        return true	;
+		Point groundPlane = calculateGroundPlaneCoordinates(new Point(x, y));
+
+		Log.i(TAG, "Ground plane coordinates: (" + groundPlane.x + ", "
+				+ groundPlane.y + ")");
+
+		colorBasedTracker.setColorForTrackingHSV(trackerHelper
+				.calcColorForTracking(hsv, new Point(x, y)));
+		isTrackingColorSet = true;
+
+		try {
+			Log.d(TAG, "Triggering robot.move(30)");
+			//_robot.rotate(30);
+			_robot.move(50);
+		} catch (ConnectionLostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return true;
 	}
 
 	private Point calculateGroundPlaneCoordinates(Point imagePlaneCoordinates) {
-//		Point groundPlane = new Point();
-//		Mat imagePlane = new Mat();
-//		imagePlane.
-//		groundPlane = projectiveMatrix.mul();
-		
+		// Point groundPlane = new Point();
+		// Mat imagePlane = new Mat();
+		// imagePlane.
+		// groundPlane = projectiveMatrix.mul();
+
 		Mat imagePlane2WorldCoordinates = calibrationHelper.getHomogenousMat();
-		
+
 		// get homogeneous coordinates out of supplied imagePlaneCoordinates
 		Mat mat3 = new Mat(3, 1, CvType.CV_64FC1);
-		mat3.put(0,0, new double[] {imagePlaneCoordinates.x, imagePlaneCoordinates.y, 1.0f});
-		
-		
+		mat3.put(0, 0, new double[] { imagePlaneCoordinates.x,
+				imagePlaneCoordinates.y, 1.0f });
+
 		Mat dest = new Mat(3, 1, CvType.CV_64FC1);
 		// 3*3*CV_64FC1 x 3*1*CV_64FC1 -> 3*1*CV_64FC1
-		
-		// see http://stackoverflow.com/questions/10168058/basic-matrix-multiplication-in-opencv-for-android
-		//Core.multiply(imagePlane2WorldCoordinates, mat3, dest);
+
+		// see
+		// http://stackoverflow.com/questions/10168058/basic-matrix-multiplication-in-opencv-for-android
+		// Core.multiply(imagePlane2WorldCoordinates, mat3, dest);
 		Core.gemm(imagePlane2WorldCoordinates, mat3, 1, new Mat(), 0, dest, 0);
-		return new Point(dest.get(0, 0)[0]/dest.get(2, 0)[0], dest.get(1, 0)[0]/dest.get(2, 0)[0]); // convert into homogeneous coordinate with form (x,y,1)
+		return new Point(dest.get(0, 0)[0] / dest.get(2, 0)[0],
+				dest.get(1, 0)[0] / dest.get(2, 0)[0]); // convert into
+														// homogeneous
+														// coordinate with form
+														// (x,y,1)
 	}
 
 }
