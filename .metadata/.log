@@ -8422,3 +8422,161 @@ user global configuration and to define the default location to store repositori
 not correct please set the HOME environment variable and restart Eclipse. Otherwise Git for Windows and
 EGit might behave differently since they see different configuration options.
 This warning can be switched off on the Team > Git > Confirmations and Warnings preference page.
+!SESSION 2013-05-07 06:51:33.426 -----------------------------------------------
+eclipse.buildId=v21.1.0-569685
+java.version=1.7.0_21
+java.vendor=Oracle Corporation
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=en_US
+Framework arguments:  -product com.android.ide.eclipse.adt.package.product
+Command-line arguments:  -os win32 -ws win32 -arch x86_64 -product com.android.ide.eclipse.adt.package.product
+
+!ENTRY org.eclipse.jface 2 0 2013-05-07 06:52:11.019
+!MESSAGE Keybinding conflicts occurred.  They may interfere with normal accelerator operation.
+!SUBENTRY 1 org.eclipse.jface 2 0 2013-05-07 06:52:11.019
+!MESSAGE A conflict occurred for CTRL+NUMPAD_SUBTRACT:
+Binding(CTRL+NUMPAD_SUBTRACT,
+	ParameterizedCommand(Command(org.eclipse.ui.edit.text.folding.collapse,Collapse,
+		Collapses the folded region at the current selection,
+		Category(org.eclipse.ui.category.textEditor,Text Editing,Text Editing Commands,true),
+		org.eclipse.ui.internal.MakeHandlersGo@6e8ea596,
+		,,true),null),
+	org.eclipse.ui.defaultAcceleratorConfiguration,
+	org.eclipse.ui.textEditorScope,,,system)
+Binding(CTRL+NUMPAD_SUBTRACT,
+	ParameterizedCommand(Command(tarlog.eclipse.plugins.commands.decreaseFont,Decrease Font,
+		,
+		Category(tarlog.eclipse.plugins.commands.category,Editor Commands,null,true),
+		org.eclipse.ui.internal.MakeHandlersGo@5719538e,
+		,,true),null),
+	org.eclipse.ui.defaultAcceleratorConfiguration,
+	org.eclipse.ui.textEditorScope,,,system)
+!SUBENTRY 1 org.eclipse.jface 2 0 2013-05-07 06:52:11.019
+!MESSAGE A conflict occurred for CTRL+NUMPAD_ADD:
+Binding(CTRL+NUMPAD_ADD,
+	ParameterizedCommand(Command(org.eclipse.ui.edit.text.folding.expand,Expand,
+		Expands the folded region at the current selection,
+		Category(org.eclipse.ui.category.textEditor,Text Editing,Text Editing Commands,true),
+		org.eclipse.ui.internal.MakeHandlersGo@3fbcbc4e,
+		,,true),null),
+	org.eclipse.ui.defaultAcceleratorConfiguration,
+	org.eclipse.ui.textEditorScope,,,system)
+Binding(CTRL+NUMPAD_ADD,
+	ParameterizedCommand(Command(tarlog.eclipse.plugins.commands.increaseFont,Increase Font,
+		,
+		Category(tarlog.eclipse.plugins.commands.category,Editor Commands,null,true),
+		org.eclipse.ui.internal.MakeHandlersGo@7feec592,
+		,,true),null),
+	org.eclipse.ui.defaultAcceleratorConfiguration,
+	org.eclipse.ui.textEditorScope,,,system)
+
+!ENTRY org.eclipse.egit.ui 2 0 2013-05-07 06:52:29.362
+!MESSAGE Warning: The environment variable HOME is not set. The following directory will be used to store the Git
+user global configuration and to define the default location to store repositories: 'D:\Helmut Wolf'. If this is
+not correct please set the HOME environment variable and restart Eclipse. Otherwise Git for Windows and
+EGit might behave differently since they see different configuration options.
+This warning can be switched off on the Team > Git > Confirmations and Warnings preference page.
+
+!ENTRY org.eclipse.jdt.core 4 0 2013-05-07 06:53:00.056
+!MESSAGE Invalid ZIP archive: D:\Helmut Wolf\Skydrive\Studium\Einführung in autonome und intelligente Systeme\PS\4.)ImageBasedVisualServoing\OpenCV Library - 2.4.4\bin\opencv library - 2.4.4.jar
+
+!ENTRY org.eclipse.jdt.core 4 4 2013-05-07 07:17:56.318
+!MESSAGE JavaBuilder handling CoreException while cleaning: IOIOLibAccessory
+!STACK 1
+org.eclipse.core.internal.resources.ResourceException: Problems encountered while deleting resources.
+	at org.eclipse.core.internal.resources.Resource.delete(Resource.java:816)
+	at org.eclipse.jdt.internal.core.builder.BatchImageBuilder.cleanOutputFolders(BatchImageBuilder.java:114)
+	at org.eclipse.jdt.internal.core.builder.JavaBuilder.clean(JavaBuilder.java:291)
+	at org.eclipse.core.internal.events.BuildManager$2.run(BuildManager.java:730)
+	at org.eclipse.core.runtime.SafeRunner.run(SafeRunner.java:42)
+	at org.eclipse.core.internal.events.BuildManager.basicBuild(BuildManager.java:199)
+	at org.eclipse.core.internal.events.BuildManager.basicBuild(BuildManager.java:239)
+	at org.eclipse.core.internal.events.BuildManager$1.run(BuildManager.java:292)
+	at org.eclipse.core.runtime.SafeRunner.run(SafeRunner.java:42)
+	at org.eclipse.core.internal.events.BuildManager.basicBuild(BuildManager.java:295)
+	at org.eclipse.core.internal.events.BuildManager.basicBuildLoop(BuildManager.java:351)
+	at org.eclipse.core.internal.events.BuildManager.build(BuildManager.java:374)
+	at org.eclipse.core.internal.resources.Workspace.buildInternal(Workspace.java:513)
+	at org.eclipse.core.internal.resources.Workspace.build(Workspace.java:422)
+	at org.eclipse.ui.internal.ide.dialogs.CleanDialog.doClean(CleanDialog.java:313)
+	at org.eclipse.ui.internal.ide.dialogs.CleanDialog$1.runInWorkspace(CleanDialog.java:151)
+	at org.eclipse.core.internal.resources.InternalWorkspaceJob.run(InternalWorkspaceJob.java:38)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:53)
+Contains: Could not delete '/IOIOLibAccessory/bin/classes/ioio'.
+org.eclipse.core.internal.resources.ResourceException: Problems encountered while deleting resources.
+	at org.eclipse.core.internal.localstore.FileSystemResourceManager.delete(FileSystemResourceManager.java:352)
+	at org.eclipse.core.internal.resources.ResourceTree.internalDeleteFolder(ResourceTree.java:352)
+	at org.eclipse.core.internal.resources.ResourceTree.standardDeleteFolder(ResourceTree.java:798)
+	at org.eclipse.core.internal.resources.Resource.unprotectedDelete(Resource.java:1977)
+	at org.eclipse.core.internal.resources.Resource.delete(Resource.java:803)
+	at org.eclipse.jdt.internal.core.builder.BatchImageBuilder.cleanOutputFolders(BatchImageBuilder.java:114)
+	at org.eclipse.jdt.internal.core.builder.JavaBuilder.clean(JavaBuilder.java:291)
+	at org.eclipse.core.internal.events.BuildManager$2.run(BuildManager.java:730)
+	at org.eclipse.core.runtime.SafeRunner.run(SafeRunner.java:42)
+	at org.eclipse.core.internal.events.BuildManager.basicBuild(BuildManager.java:199)
+	at org.eclipse.core.internal.events.BuildManager.basicBuild(BuildManager.java:239)
+	at org.eclipse.core.internal.events.BuildManager$1.run(BuildManager.java:292)
+	at org.eclipse.core.runtime.SafeRunner.run(SafeRunner.java:42)
+	at org.eclipse.core.internal.events.BuildManager.basicBuild(BuildManager.java:295)
+	at org.eclipse.core.internal.events.BuildManager.basicBuildLoop(BuildManager.java:351)
+	at org.eclipse.core.internal.events.BuildManager.build(BuildManager.java:374)
+	at org.eclipse.core.internal.resources.Workspace.buildInternal(Workspace.java:513)
+	at org.eclipse.core.internal.resources.Workspace.build(Workspace.java:422)
+	at org.eclipse.ui.internal.ide.dialogs.CleanDialog.doClean(CleanDialog.java:313)
+	at org.eclipse.ui.internal.ide.dialogs.CleanDialog$1.runInWorkspace(CleanDialog.java:151)
+	at org.eclipse.core.internal.resources.InternalWorkspaceJob.run(InternalWorkspaceJob.java:38)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:53)
+Contains: Problems encountered while deleting files.
+Contains: Could not delete: D:\Helmut Wolf\Skydrive\Studium\Einführung in autonome und intelligente Systeme\PS\4.)ImageBasedVisualServoing\IOIOLibAccessory\bin\classes\ioio\lib\android.
+Contains: Could not delete: D:\Helmut Wolf\Skydrive\Studium\Einführung in autonome und intelligente Systeme\PS\4.)ImageBasedVisualServoing\IOIOLibAccessory\bin\classes\ioio\lib.
+Contains: Could not delete: D:\Helmut Wolf\Skydrive\Studium\Einführung in autonome und intelligente Systeme\PS\4.)ImageBasedVisualServoing\IOIOLibAccessory\bin\classes\ioio.
+!SUBENTRY 1 org.eclipse.core.resources 4 273 2013-05-07 07:17:56.326
+!MESSAGE Problems encountered while deleting resources.
+!SUBENTRY 2 org.eclipse.core.resources 4 273 2013-05-07 07:17:56.326
+!MESSAGE Could not delete '/IOIOLibAccessory/bin/classes/ioio'.
+!STACK 1
+org.eclipse.core.internal.resources.ResourceException: Problems encountered while deleting resources.
+	at org.eclipse.core.internal.localstore.FileSystemResourceManager.delete(FileSystemResourceManager.java:352)
+	at org.eclipse.core.internal.resources.ResourceTree.internalDeleteFolder(ResourceTree.java:352)
+	at org.eclipse.core.internal.resources.ResourceTree.standardDeleteFolder(ResourceTree.java:798)
+	at org.eclipse.core.internal.resources.Resource.unprotectedDelete(Resource.java:1977)
+	at org.eclipse.core.internal.resources.Resource.delete(Resource.java:803)
+	at org.eclipse.jdt.internal.core.builder.BatchImageBuilder.cleanOutputFolders(BatchImageBuilder.java:114)
+	at org.eclipse.jdt.internal.core.builder.JavaBuilder.clean(JavaBuilder.java:291)
+	at org.eclipse.core.internal.events.BuildManager$2.run(BuildManager.java:730)
+	at org.eclipse.core.runtime.SafeRunner.run(SafeRunner.java:42)
+	at org.eclipse.core.internal.events.BuildManager.basicBuild(BuildManager.java:199)
+	at org.eclipse.core.internal.events.BuildManager.basicBuild(BuildManager.java:239)
+	at org.eclipse.core.internal.events.BuildManager$1.run(BuildManager.java:292)
+	at org.eclipse.core.runtime.SafeRunner.run(SafeRunner.java:42)
+	at org.eclipse.core.internal.events.BuildManager.basicBuild(BuildManager.java:295)
+	at org.eclipse.core.internal.events.BuildManager.basicBuildLoop(BuildManager.java:351)
+	at org.eclipse.core.internal.events.BuildManager.build(BuildManager.java:374)
+	at org.eclipse.core.internal.resources.Workspace.buildInternal(Workspace.java:513)
+	at org.eclipse.core.internal.resources.Workspace.build(Workspace.java:422)
+	at org.eclipse.ui.internal.ide.dialogs.CleanDialog.doClean(CleanDialog.java:313)
+	at org.eclipse.ui.internal.ide.dialogs.CleanDialog$1.runInWorkspace(CleanDialog.java:151)
+	at org.eclipse.core.internal.resources.InternalWorkspaceJob.run(InternalWorkspaceJob.java:38)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:53)
+Contains: Problems encountered while deleting files.
+Contains: Could not delete: D:\Helmut Wolf\Skydrive\Studium\Einführung in autonome und intelligente Systeme\PS\4.)ImageBasedVisualServoing\IOIOLibAccessory\bin\classes\ioio\lib\android.
+Contains: Could not delete: D:\Helmut Wolf\Skydrive\Studium\Einführung in autonome und intelligente Systeme\PS\4.)ImageBasedVisualServoing\IOIOLibAccessory\bin\classes\ioio\lib.
+Contains: Could not delete: D:\Helmut Wolf\Skydrive\Studium\Einführung in autonome und intelligente Systeme\PS\4.)ImageBasedVisualServoing\IOIOLibAccessory\bin\classes\ioio.
+!SUBENTRY 3 org.eclipse.core.resources 4 273 2013-05-07 07:17:56.327
+!MESSAGE Problems encountered while deleting resources.
+!SUBENTRY 4 org.eclipse.core.filesystem 4 273 2013-05-07 07:17:56.327
+!MESSAGE Problems encountered while deleting files.
+!SUBENTRY 5 org.eclipse.core.filesystem 4 273 2013-05-07 07:17:56.327
+!MESSAGE Could not delete: D:\Helmut Wolf\Skydrive\Studium\Einführung in autonome und intelligente Systeme\PS\4.)ImageBasedVisualServoing\IOIOLibAccessory\bin\classes\ioio\lib\android.
+!SUBENTRY 5 org.eclipse.core.filesystem 4 273 2013-05-07 07:17:56.327
+!MESSAGE Could not delete: D:\Helmut Wolf\Skydrive\Studium\Einführung in autonome und intelligente Systeme\PS\4.)ImageBasedVisualServoing\IOIOLibAccessory\bin\classes\ioio\lib.
+!SUBENTRY 5 org.eclipse.core.filesystem 4 273 2013-05-07 07:17:56.327
+!MESSAGE Could not delete: D:\Helmut Wolf\Skydrive\Studium\Einführung in autonome und intelligente Systeme\PS\4.)ImageBasedVisualServoing\IOIOLibAccessory\bin\classes\ioio.
+
+!ENTRY org.eclipse.jdt.core 4 0 2013-05-07 07:22:39.767
+!MESSAGE Invalid ZIP archive: D:\Helmut Wolf\Skydrive\Studium\Einführung in autonome und intelligente Systeme\PS\3.)ImageBasedVisualServoing\IOIOLib\target\android\bin\ioiolibandroid.jar
+
+!ENTRY org.eclipse.jdt.core 4 0 2013-05-07 07:22:39.773
+!MESSAGE Invalid ZIP archive: D:\Helmut Wolf\Skydrive\Studium\Einführung in autonome und intelligente Systeme\PS\3.)ImageBasedVisualServoing\IOIOLib\target\android\bin\ioiolibandroid.jar
+
+!ENTRY org.eclipse.jdt.core 4 0 2013-05-07 07:22:39.781
+!MESSAGE Invalid ZIP archive: D:\Helmut Wolf\Skydrive\Studium\Einführung in autonome und intelligente Systeme\PS\3.)ImageBasedVisualServoing\IOIOLib\target\android\bin\ioiolibandroid.jar

@@ -272,4 +272,29 @@ public class Level1 {
 		}
 	}
 
+	/**
+	 * resets the FSMs of this AND all lower layers
+	 */
+	public void reset() {
+		log2File("in reset()");
+		
+		synchronized (_fsmState) {
+			log2File("resetting _fsmState to IDLE");
+			_fsmState = FsmState.IDLE;
+			
+			log2File("setting _degreesCached and _routesCached to null");
+			_degreesCached = null;
+			_routesCached = null;
+		}
+		
+		if(_robot!=null) {
+			log2File("Calling _robot.reset()");		
+			_robot.reset();
+		} else {
+			log2File("Skipped call to _robot.reset() as _robot is null");
+		}
+		
+		log2File("reset() done");		
+	}
+
 }

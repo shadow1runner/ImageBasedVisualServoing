@@ -6,10 +6,12 @@ int id CalibrationBackButton 0x7f04000a
 int id CalibrationLabel 0x7f040003
 int id CalibrationNextButton 0x7f04000b
 int id JavaCameraView 0x7f040005
+int id ResetFsmsButton 0x7f04000d
+int id TextView 0x7f04000e
 int id acceptCalibration 0x7f040009
 int id any 0x7f040000
 int id back 0x7f040001
-int id camera_view 0x7f04000d
+int id camera_view 0x7f04000f
 int id color_based_tracking_surface_view 0x7f04000c
 int id front 0x7f040002
 int id linearLayoutSummary 0x7f040006

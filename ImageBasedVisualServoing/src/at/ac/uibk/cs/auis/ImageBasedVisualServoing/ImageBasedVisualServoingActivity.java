@@ -37,6 +37,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 import at.ac.uibk.cs.auis.ImageBasedVisualServoing.Calibration.CalibrationActivity;
 import at.ac.uibk.cs.auis.ImageBasedVisualServoing.Calibration.CalibrationChessboardActivity;
@@ -59,6 +61,8 @@ public class ImageBasedVisualServoingActivity extends IOIOActivity implements
 	private static final String TAG = "Auis::ImageBasedVisualServoingActivity";
 
 	private CameraBridgeViewBase mOpenCvCameraView;
+	private Button _resetFsmsButton;
+	private TextView _textView;
 
 	private Mat hsv;
 
@@ -153,6 +157,7 @@ public class ImageBasedVisualServoingActivity extends IOIOActivity implements
 		// Log.i(TAG, "after calling logcat-activity");
 
 		setContentView(R.layout.image_based_visual_servoing_view);
+		
 		mOpenCvCameraView = (CameraBridgeViewBase) findViewById(R.id.camera_view);
 		mOpenCvCameraView.setVisibility(SurfaceView.VISIBLE);
 		mOpenCvCameraView.setCvCameraViewListener(this);
@@ -161,6 +166,19 @@ public class ImageBasedVisualServoingActivity extends IOIOActivity implements
 				mOpenCvCameraView.setClickable(false);
 			}
 		});
+		
+		_resetFsmsButton = (Button)findViewById(R.id.ResetFsmsButton);
+		_resetFsmsButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Log.i(TAG, "Resetting FSMs on user-request");
+				_level1.reset();
+				Toast.makeText(getApplicationContext(), "FSMs resetted successfully", Toast.LENGTH_LONG).show();
+			}
+		});
+		
+		_textView = (TextView)findViewById(R.id.TextView);
+		
 
 		Bundle b = getIntent().getExtras();
 		if (b == null) {
@@ -178,10 +196,18 @@ public class ImageBasedVisualServoingActivity extends IOIOActivity implements
 		Intent i = getIntent();
 		calibrationHelper = (CalibrationHelper) i
 				.getParcelableExtra("calibrationHelper");
-		if (calibrationHelper == null)
-			Log.e(TAG, "unable to get calibrationHelper");
+		if (calibrationHelper == null) {
+			Log.e(TAG, "unable to get calibrationHelper by unparceling");
+			
+//			DeSerializeCalibration();
+//			if(calibrationHelper==null) {
+//				Log.e(TAG, "unable to get calibrationHelper by deserialization");
+//			} else {
+//				Log.e(TAG, "Got calibrationHelper successfully by deserialization");
+//			}
+		}
 		else
-			Log.e(TAG, "Got calibrationHelper successfully");
+			Log.e(TAG, "Got calibrationHelper successfully by unparceling");
 
 	}
 
@@ -412,6 +438,15 @@ public class ImageBasedVisualServoingActivity extends IOIOActivity implements
 
 	@Override
 	public boolean onTouch(View v, MotionEvent event) {
+		if(calibrationHelper==null) {
+			Log.i(TAG, "calibrationhelper is null, user has to calibrate first, cancelling onTouch");
+			//_textView.setText("calibrationhelper is null, plz calibrate first");
+			Toast.makeText(this.getApplicationContext(), "calibrationhelper is null, plz calibrate first", Toast.LENGTH_LONG).show();
+			return false;
+		} else {
+			//_textView.setText("Reset FSMs");
+		}
+		
 		int cols = hsv.cols();
 		int rows = hsv.rows();
 

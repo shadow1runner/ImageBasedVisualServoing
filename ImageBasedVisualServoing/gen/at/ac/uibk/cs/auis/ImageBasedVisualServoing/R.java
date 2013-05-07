@@ -45,10 +45,12 @@ containing a value of this type.
         public static final int CalibrationLabel=0x7f040003;
         public static final int CalibrationNextButton=0x7f04000b;
         public static final int JavaCameraView=0x7f040005;
+        public static final int ResetFsmsButton=0x7f04000d;
+        public static final int TextView=0x7f04000e;
         public static final int acceptCalibration=0x7f040009;
         public static final int any=0x7f040000;
         public static final int back=0x7f040001;
-        public static final int camera_view=0x7f04000d;
+        public static final int camera_view=0x7f04000f;
         public static final int color_based_tracking_surface_view=0x7f04000c;
         public static final int front=0x7f040002;
         public static final int linearLayoutSummary=0x7f040006;

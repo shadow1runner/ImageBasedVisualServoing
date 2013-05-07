@@ -409,4 +409,14 @@ public class Robot extends BaseIOIOLooper {
 		_servo.setDutyCycle(0.0528f + percent * 0.0005f);
 		log2File("grab_Internal finished successfully");
 	}
+
+	public void reset() {
+		log2File("in reset()");
+		synchronized (_fsmState) {
+			log2File("resetting _fsmState to IDLE");
+			_fsmState = FsmState.IDLE;
+		}
+		
+		log2File("reset() done");
+	}
 }
