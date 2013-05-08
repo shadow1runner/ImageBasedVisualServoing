@@ -79,10 +79,10 @@ public class CalibrationActivity extends Activity implements
 	
 	public CalibrationActivity() {
 		List<Point> worldCoordinates = new ArrayList<Point>();
-		worldCoordinates.add(new Point(175.0, 125.0));
-		worldCoordinates.add(new Point(175.0, 25.0));
-		worldCoordinates.add(new Point(275.0, 25.0));
-		worldCoordinates.add(new Point(275.0, 125.0));
+		worldCoordinates.add(new Point(17.50, 12.5));
+		worldCoordinates.add(new Point(17.50, 2.50));
+		worldCoordinates.add(new Point(27.50, 2.50));
+		worldCoordinates.add(new Point(27.50, 12.50));
 		
 		calibrationHelper = new CalibrationHelper(worldCoordinates);
 	}

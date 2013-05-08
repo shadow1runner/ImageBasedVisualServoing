@@ -13,16 +13,16 @@
 		<item value="false" key="isRegEx"/>
 		<item value="false" key="incremental"/>
 		<item value="false" key="wholeword"/>
-		<item value="calculateRoute" key="selection"/>
+		<item value="Scheduling" key="selection"/>
 		<list key="findhistory">
+			<item value="scheduling"/>
+			<item value="getnextschedu"/>
+			<item value="grab"/>
 			<item value="calculateroute"/>
 			<item value="calculate"/>
-			<item value="scheduling"/>
 			<item value="todo"/>
 			<item value="grabbing"/>
 			<item value="loop"/>
-			<item value="setup"/>
-			<item value="veloc"/>
 		</list>
 		<list key="replacehistory">
 		</list>

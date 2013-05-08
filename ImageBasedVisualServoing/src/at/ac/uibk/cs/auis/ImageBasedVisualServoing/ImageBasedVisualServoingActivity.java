@@ -462,7 +462,7 @@ public class ImageBasedVisualServoingActivity extends IOIOActivity implements
 			return false;
 
 		Point groundPlane = calculateGroundPlaneCoordinates(new Point(x, y));
-
+		
 		Log.i(TAG, "Ground plane coordinates: (" + groundPlane.x + ", "
 				+ groundPlane.y + ")");
 
@@ -471,10 +471,12 @@ public class ImageBasedVisualServoingActivity extends IOIOActivity implements
 		isTrackingColorSet = true;
 
 //		try {
-			Log.d(TAG, "Triggering robot.move(30)");
+			Log.d(TAG, "Triggering _level1.setSetPoint(new Point((int)groundPlane.x,(int)groundPlane.y));");
 			//_robot.rotate(30);
 			//_robot.move(50);
-			_level1.setSetPoint(new Point(30,40));
+			//_level1.setSetPoint(new Point(30,40));
+			_level1.setSetPoint(new Point((int)groundPlane.x,(int)groundPlane.y));
+			
 //		} catch (ConnectionLostException e) {
 //			// TODO Auto-generated catch block
 //			e.printStackTrace();
