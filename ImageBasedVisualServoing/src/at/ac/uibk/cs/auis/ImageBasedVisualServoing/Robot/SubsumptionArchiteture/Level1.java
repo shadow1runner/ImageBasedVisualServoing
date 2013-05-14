@@ -125,7 +125,12 @@ public class Level1 {
 				int amount = getNextScheduledRoute();
 				log2File("Scheduling new move-amount for robot: " + amount
 						+ "cm");
-				_robot.move(amount);
+				if(amount==0) {
+					log2File("MOVING=> IDLE ignoring scheduled route as it is 0, changing to IDLE");
+					_fsmState=FsmState.IDLE;
+				} else {
+					_robot.move(amount);
+				}
 				break;
 			case TURNING:
 				if (isTurnFinished()) {
@@ -138,7 +143,12 @@ public class Level1 {
 					int degree = getNextScheduledAngle();
 					log2File("Scheduling new rotate-amount for robot: "
 							+ degree + "°");
-					_robot.rotate(degree);
+					if(degree==0) {
+						log2File("MOVING=> IDLE ignoring scheduled degrees as it is 0, changing to IDLE");
+						_fsmState=FsmState.IDLE;
+					} else {
+						_robot.rotate(degree);
+					}
 				}
 				break;
 			case GRABBING:

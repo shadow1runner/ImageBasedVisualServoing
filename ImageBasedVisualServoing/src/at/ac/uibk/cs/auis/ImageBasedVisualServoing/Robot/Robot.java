@@ -65,7 +65,6 @@ public class Robot extends BaseIOIOLooper {
 
 	public Robot(Handler handler, Level1 level1) {
 		log2File("In Robot-ctor");
-		log2File("assigning handler to _handler");
 		_handler = handler;
 		_level1 = level1;
 	}
@@ -190,9 +189,17 @@ public class Robot extends BaseIOIOLooper {
 		}
 	}
 
+	static int counter = 0;
 	private boolean setPointReached() {
 		log2File("in setPointReached()");
-		return _setPoint.equals(_currentPos);
+		if(_setPoint.equals(_currentPos))
+			counter ++;
+		
+		if(counter >= 10) {
+			counter =0;
+			return true;
+		}
+		return false;
 	}
 
 	private int getSensorReadings() throws ConnectionLostException,
