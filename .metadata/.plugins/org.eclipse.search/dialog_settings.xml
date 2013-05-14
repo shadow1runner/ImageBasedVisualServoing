@@ -16,8 +16,8 @@
 	<section name="DialogBounds_SearchDialog">
 		<item value="618" key="DIALOG_WIDTH"/>
 		<item value="185" key="DIALOG_Y_ORIGIN"/>
-		<item value="644" key="DIALOG_X_ORIGIN"/>
 		<item value="537" key="DIALOG_HEIGHT"/>
+		<item value="644" key="DIALOG_X_ORIGIN"/>
 		<item value="1|Segoe UI|9.0|0|WINDOWS|1|-15|0|0|0|400|0|0|0|1|0|0|0|0|Segoe UI" key="DIALOG_FONT_NAME"/>
 	</section>
 	<section name="Search">
@@ -42,6 +42,9 @@
 		<item value="false" key="REG_EX_SEARCH"/>
 		<item value="false" key="SEARCH_DERIVED"/>
 		<item value="4" key="HISTORY_SIZE"/>
+		<section name="EXTENSIONS">
+			<item value="*" key="0"/>
+		</section>
 		<section name="HISTORY2">
 			<item value="false" key="isRegExSearch"/>
 			<item value="GetPerspectiveTransform" key="textPattern"/>
@@ -52,9 +55,6 @@
 			</list>
 			<list key="workingSets">
 			</list>
-		</section>
-		<section name="EXTENSIONS">
-			<item value="*" key="0"/>
 		</section>
 		<section name="HISTORY3">
 			<item value="false" key="isRegExSearch"/>

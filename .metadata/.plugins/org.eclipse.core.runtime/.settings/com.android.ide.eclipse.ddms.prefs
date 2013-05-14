@@ -17,6 +17,7 @@ logcat.view.colsize.TID=62
 logcat.view.colsize.Tag=361
 logcat.view.colsize.Text=682
 logcat.view.colsize.Time=217
+logcat.view.filters.list=name\: 'at.ac.uibk.cs.auis.ImageBasedVisualServoing (Session Filter)', tag\: '', text\: '', pid\: '', app\: 'at.ac.uibk.cs.auis.ImageBasedVisualServoing', level\: 'verbose', 
 threadPanel.Col0=38
 threadPanel.Col1=54
 threadPanel.Col2=87

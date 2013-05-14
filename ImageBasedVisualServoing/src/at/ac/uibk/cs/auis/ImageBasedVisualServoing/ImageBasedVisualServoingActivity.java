@@ -355,6 +355,12 @@ public class ImageBasedVisualServoingActivity extends IOIOActivity implements
 			for (Point point : lowestPoints) {
 				rgba = DrawHelper.drawPoint(rgba, point, new Scalar(0xFF, 0x00,
 						0x00, 0x00));
+				if(calibrationHelper!=null) {
+					Point groundPlane = calculateGroundPlaneCoordinates(point);
+					
+					Log.i(TAG, "Ground plane coordinates: (" + groundPlane.x + ", "
+							+ groundPlane.y + ")");
+				}
 			}
 
 			for (Rect rect : colorBasedTracker.getBoundingRects())
@@ -461,11 +467,6 @@ public class ImageBasedVisualServoingActivity extends IOIOActivity implements
 		if ((x < 0) || (y < 0) || (x > cols) || (y > rows))
 			return false;
 
-		Point groundPlane = calculateGroundPlaneCoordinates(new Point(x, y));
-		
-		Log.i(TAG, "Ground plane coordinates: (" + groundPlane.x + ", "
-				+ groundPlane.y + ")");
-
 		colorBasedTracker.setColorForTrackingHSV(trackerHelper
 				.calcColorForTracking(hsv, new Point(x, y)));
 		isTrackingColorSet = true;
@@ -475,7 +476,7 @@ public class ImageBasedVisualServoingActivity extends IOIOActivity implements
 			//_robot.rotate(30);
 			//_robot.move(50);
 			//_level1.setSetPoint(new Point(30,40));
-			_level1.setSetPoint(new Point((int)groundPlane.x,(int)groundPlane.y));
+			//_level1.setSetPoint(new Point((int)groundPlane.x,(int)groundPlane.y));
 			
 //		} catch (ConnectionLostException e) {
 //			// TODO Auto-generated catch block
