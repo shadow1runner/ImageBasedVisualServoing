@@ -13,16 +13,16 @@
 		<item value="false" key="isRegEx"/>
 		<item value="false" key="incremental"/>
 		<item value="false" key="wholeword"/>
-		<item value="" key="selection"/>
+		<item value="reset" key="selection"/>
 		<list key="findhistory">
+			<item value="reset"/>
+			<item value="oncamerafr"/>
+			<item value="turning"/>
+			<item value="oncameraframe"/>
+			<item value="oncamerframe"/>
 			<item value="run"/>
 			<item value="image_based_visual_servoing_view"/>
 			<item value="robot in "/>
-			<item value="_robot"/>
-			<item value="_setPoint"/>
-			<item value="new Robo"/>
-			<item value="_currentPos"/>
-			<item value="scheduling"/>
 		</list>
 		<list key="replacehistory">
 		</list>

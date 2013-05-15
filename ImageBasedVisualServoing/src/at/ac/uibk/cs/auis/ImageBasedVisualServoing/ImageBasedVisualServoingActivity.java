@@ -172,6 +172,7 @@ public class ImageBasedVisualServoingActivity extends IOIOActivity implements
 			@Override
 			public void onClick(View v) {
 				Log.i(TAG, "Resetting FSMs on user-request");
+				isTrackingColorSet = false;
 				_level1.reset();
 				Toast.makeText(getApplicationContext(), "FSMs resetted successfully", Toast.LENGTH_LONG).show();
 			}
@@ -346,25 +347,29 @@ public class ImageBasedVisualServoingActivity extends IOIOActivity implements
 				// lowestPoints =
 				// colorBasedTracker.getLowestBoundOfContours(hsv, 2); // 2
 				// beacons SHOULD be in view
-				lowestPoints = colorBasedTracker.getLowestBoundOfContours(hsv,
-						1); // 2 beacons SHOULD be in view
+				lowestPoints = colorBasedTracker.getLowestBoundOfContours(hsv, 1); // 2 beacons SHOULD be in view
 
 			} catch (IllegalArgumentException e) {
 			}
 
-			for (Point point : lowestPoints) {
-				rgba = DrawHelper.drawPoint(rgba, point, new Scalar(0xFF, 0x00,
-						0x00, 0x00));
-				if(calibrationHelper!=null) {
-					Point groundPlane = calculateGroundPlaneCoordinates(point);
-					
-					Log.i(TAG, "Ground plane coordinates: (" + groundPlane.x + ", "
-							+ groundPlane.y + ")");
+			try {
+				for (Point point : lowestPoints) {
+					rgba = DrawHelper.drawPoint(rgba, point, new Scalar(0xFF, 0x00,0x00, 0x00));
+					if(calibrationHelper!=null) {
+						Point groundPlane = calculateGroundPlaneCoordinates(point);
+						
+						Log.i(TAG, "Ground plane coordinates: (" + groundPlane.x + ", " + groundPlane.y + ")");
+						
+						_level1.setSetPoint(groundPlane);
+					}
 				}
+	
+				for (Rect rect : colorBasedTracker.getBoundingRects())
+					rgba = DrawHelper.drawRectangle(rgba, rect, INDICATING_COLOR);
+			
+			} catch (Exception e) {
+				Log.e(TAG, e.getMessage());
 			}
-
-			for (Rect rect : colorBasedTracker.getBoundingRects())
-				rgba = DrawHelper.drawRectangle(rgba, rect, INDICATING_COLOR);
 		} else {
 			hsv = rgba;
 		}

@@ -16,12 +16,18 @@
 		<item value="120" key="DIALOG_Y_ORIGIN"/>
 		<item value="533" key="DIALOG_X_ORIGIN"/>
 	</section>
-	<section name="InstallationDialogSettings">
-		<item value="934" key="DIALOG_WIDTH"/>
-		<item value="-219" key="DIALOG_Y_ORIGIN"/>
-		<item value="980" key="DIALOG_HEIGHT"/>
-		<item value="-123" key="DIALOG_X_ORIGIN"/>
-		<item value="1|Segoe UI|9.0|0|WINDOWS|1|-15|0|0|0|400|0|0|0|1|0|0|0|0|Segoe UI" key="DIALOG_FONT_NAME"/>
+	<section name="ZipFileExportWizard">
+		<item value="true" key="WizardZipFileResourceExportPage1.STORE_CREATE_STRUCTURE_ID"/>
+		<item value="true" key="WizardZipFileResourceExportPage1.STORE_COMPRESS_CONTENTS_ID"/>
+		<list key="WizardZipFileResourceExportPage1.STORE_DESTINATION_NAMES_ID">
+			<item value="D:\Helmut Wolf\Desktop\140513.zip"/>
+			<item value="D:\Helmut Wolf\Skydrive\300413.zip"/>
+			<item value="D:\Helmut Wolf\Skydrive\290413.zip"/>
+			<item value="D:\Helmut Wolf\Desktop\Ibvs_28.04.2013.zip"/>
+			<item value="D:\Helmut Wolf\Desktop\Ibvs_21.04.2013.zip"/>
+		</list>
+	</section>
+	<section name="ZipFileImportWizard">
 	</section>
 	<section name="NewWizardAction">
 		<item value="org.eclipse.jdt.junit.wizards.NewTestCaseCreationWizard" key="NewWizardSelectionPage.STORE_SELECTED_ID"/>
@@ -30,24 +36,19 @@
 			<item value="org.eclipse.jdt.ui.java/org.eclipse.jdt.junit"/>
 		</list>
 	</section>
-	<section name="ZipFileImportWizard">
-	</section>
-	<section name="ZipFileExportWizard">
-		<item value="true" key="WizardZipFileResourceExportPage1.STORE_CREATE_STRUCTURE_ID"/>
-		<item value="true" key="WizardZipFileResourceExportPage1.STORE_COMPRESS_CONTENTS_ID"/>
-		<list key="WizardZipFileResourceExportPage1.STORE_DESTINATION_NAMES_ID">
-			<item value="D:\Helmut Wolf\Skydrive\300413.zip"/>
-			<item value="D:\Helmut Wolf\Skydrive\290413.zip"/>
-			<item value="D:\Helmut Wolf\Desktop\Ibvs_28.04.2013.zip"/>
-			<item value="D:\Helmut Wolf\Desktop\Ibvs_21.04.2013.zip"/>
-		</list>
+	<section name="InstallationDialogSettings">
+		<item value="934" key="DIALOG_WIDTH"/>
+		<item value="-219" key="DIALOG_Y_ORIGIN"/>
+		<item value="-123" key="DIALOG_X_ORIGIN"/>
+		<item value="980" key="DIALOG_HEIGHT"/>
+		<item value="1|Segoe UI|9.0|0|WINDOWS|1|-15|0|0|0|400|0|0|0|1|0|0|0|0|Segoe UI" key="DIALOG_FONT_NAME"/>
 	</section>
 	<section name="ShowViewDialog">
 		<item value="392" key="DIALOG_WIDTH"/>
 		<item value="org.eclipse.jdt.debug.ui.DisplayView" key="ShowViewDialog.STORE_SELECTED_VIEW_ID"/>
 		<item value="207" key="DIALOG_Y_ORIGIN"/>
-		<item value="477" key="DIALOG_HEIGHT"/>
 		<item value="773" key="DIALOG_X_ORIGIN"/>
+		<item value="477" key="DIALOG_HEIGHT"/>
 		<item value="1|Segoe UI|9.0|0|WINDOWS|1|-15|0|0|0|400|0|0|0|1|0|0|0|0|Segoe UI" key="DIALOG_FONT_NAME"/>
 		<list key="ShowViewDialog.STORE_EXPANDED_CATEGORIES_ID">
 			<item value="org.eclipse.debug.ui"/>

@@ -39,7 +39,6 @@ public class Level1 {
 			bufferedWriter.close();
 			filewriter.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -54,16 +53,12 @@ public class Level1 {
 	 * specified setPoint than moves to it
 	 */
 	private enum FsmState {
-		IDLE, TURNING, MOVING, GRABBING
+		IDLE, TURNING, MOVING, GRABBING, DONE
 	};
 
 	private FsmState _fsmState = FsmState.IDLE;
 	private Robot _robot;
 	private Point _setPoint;
-	private int[] _degreesCached;
-	private int _degreeCachePointer;
-	private int[] _routesCached;
-	private int _routeCachePointer;
 	private boolean _grabFinished;
 
 	public void setup(Robot robot) throws ConnectionLostException {
@@ -73,96 +68,94 @@ public class Level1 {
 
 	public void loop() throws ConnectionLostException, InterruptedException {
 		log2File("in loop()");
-		if (_robot.workInProgress()) {
-			log2File("Robot workInProgress: true");
-			switch (_fsmState) {
-			case IDLE:
-				log2File("Staying in IDLE-mode");
-				break;
-			case MOVING:
-				if (isRouteFinished()) {
-					log2File("MOVING -> GRABBING");
-					_fsmState = FsmState.GRABBING;
-
-					log2File("_routesCached = null;");
-					_routesCached = null;
-
-					log2File("setting _grabFinished to false");
-					_grabFinished = false;
-				} else {
-					log2File("Staying in MOVING-mode");
-				}
-				break;
-			case TURNING:
-				if (isTurnFinished()) {
-					log2File("TURNING -> MOVING");
-					_fsmState = FsmState.MOVING;
-
-					log2File("_degreesCached = null;");
-					_degreesCached = null;
-				} else {
-					log2File("Staying in TURNING-mode");
-				}
-				break;
-			case GRABBING:
-				if (isGrabbingFinished()) {
-					log2File("GRABBING -> IDLE");
-					_fsmState = FsmState.MOVING;
-				} else {
-					log2File("Staying in GRABBING-mode");
-				}
-				break;
+		
+		doStateTransitionIfNecessary();
+		
+		switch (_fsmState) {
+		case IDLE:
+			log2File("Current state: IDLE");
+			// _robot.grab(0);
+			break;
+		case MOVING:
+			log2File("Current state: MOVING");
+			int amount = getRoute();
+			log2File("Scheduling new move-amount for robot: " + amount + "cm");
+			_robot.move(amount);
+			break;
+		case TURNING:
+			log2File("Current state: TURNING");
+			int degree = getAngle();
+			log2File("Scheduling new rotate-amount for robot: " + degree + "°");
+			if(degree==0) {
+				log2File("MOVING=> IDLE ignoring scheduled degrees as it is 0, changing to IDLE");
+				_fsmState=FsmState.IDLE;
+			} else {
+				_robot.rotate(degree);
 			}
-		} else {
-			log2File("Robot workInProgress: false");
-			// robot is waiting for new commands
-			switch (_fsmState) {
-			case IDLE:
-				log2File("state idle");
-				// _robot.grab(0);
-				break;
-			case MOVING:
-				int amount = getNextScheduledRoute();
-				log2File("Scheduling new move-amount for robot: " + amount
-						+ "cm");
-				if(amount==0) {
-					log2File("MOVING=> IDLE ignoring scheduled route as it is 0, changing to IDLE");
-					_fsmState=FsmState.IDLE;
-				} else {
-					_robot.move(amount);
-				}
-				break;
-			case TURNING:
-				if (isTurnFinished()) {
-					log2File("TURNING -> MOVING");
-					_fsmState = FsmState.MOVING;
-
-					log2File("_degreesCached = null;");
-					_degreesCached = null;
-				} else {
-					int degree = getNextScheduledAngle();
-					log2File("Scheduling new rotate-amount for robot: "
-							+ degree + "°");
-					if(degree==0) {
-						log2File("MOVING=> IDLE ignoring scheduled degrees as it is 0, changing to IDLE");
-						_fsmState=FsmState.IDLE;
-					} else {
-						_robot.rotate(degree);
-					}
-				}
-				break;
-			case GRABBING:
-				log2File("Scheduling new grab-command for robot");
-				_robot.grab(100);
-				_grabFinished = true;
-				_fsmState = FsmState.IDLE;
-				break;
-			default:
-				break;
-			}
+			break;
+		case GRABBING:
+			log2File("Current state: GRABBING");
+			log2File("Scheduling new grab-command for robot");
+			_robot.grab(100);
+			_grabFinished = true;
+			_fsmState = FsmState.DONE;
+			break;
+		case DONE:
+			log2File("Current state: DONE");
+			break;
+		default:
+			break;
 		}
 	}
 
+	private void doStateTransitionIfNecessary() {
+		log2File("in doStateTransitionIfNecessary()");
+		
+		if(_fsmState==FsmState.TURNING) {
+			log2File("checking, whether the robot still has to turn");
+			if(isTurnFinished()) {
+				log2File("Turning is finished");
+				log2File("DOING STATE TRANSITION TURNING => MOVING");
+				_fsmState=FsmState.MOVING;
+			}
+		} else if(_fsmState==FsmState.MOVING) {
+			log2File("checking, whether the robot still has to turn");
+			if(isRouteFinished()) {
+				log2File("Route is finished");
+				log2File("DOING STATE TRANSITION MOVING => GRABBING");
+				_fsmState=FsmState.GRABBING;
+			}
+		}
+		
+		log2File("in doStateTransitionIfNecessary()-end");
+	}
+
+	private boolean isTurnFinished() {
+		log2File("in isTurnFinished()");
+		
+		log2File("robots current setpoint is: " + _setPoint);
+		if(Math.abs(_setPoint.y) < 1.0) {
+			log2File("|_setPoint.y| < 1.0 is true => RETURNING true");
+			return true;
+		} else {
+			log2File("|_setPoint.y| < 1.0 is false => RETURNING false");
+			return false;
+		}
+	}
+	
+	private boolean isRouteFinished() {
+		log2File("in isRouteFinished()");
+
+		log2File("robots current setpoint is: " + _setPoint);
+		if(_setPoint.x < 15.0) {
+			log2File("_setPoint.x < 15.0 is true => RETURNING true");
+			return true;
+		} else {
+			log2File("_setPoint.x < 15.0  is false => RETURNING false");
+			return false;
+		}
+	}
+	
 	private boolean isGrabbingFinished() {
 		log2File("in isGrabbingFinished()");
 
@@ -170,147 +163,24 @@ public class Level1 {
 		return _grabFinished == true;
 	}
 
-	private boolean isRouteFinished() {
-		log2File("in isRouteFinished()");
-		log2File("_routeCachePointer == ROUTE_GRANULARITY: "
-				+ _routeCachePointer + " == " + ROUTE_GRANULARITY);
-		return _routeCachePointer == ROUTE_GRANULARITY;
-	}
-
-	private boolean isTurnFinished() {
-		log2File("in isTurnFinished(), returning: _degreeCachePointer == DEGREE_GRANULARITY: "
-				+ _degreeCachePointer + "==" + DEGREE_GRANULARITY);
-		return _degreeCachePointer == DEGREE_GRANULARITY;
-	}
-
-	/**
-	 * calculates and returns a given amount in [cm] using an multiplicative
-	 * increase method
-	 * 
-	 * @return amount which should be scheduled to the robot to be moved
-	 */
-	public int getNextScheduledRoute() {
-		log2File("In getNextScheduledRoute()");
-		if (_routesCached == null) {
-			calculateRouteSchedule();
+	private int getAngle() {
+		log2File("in getAngle()");
+		
+		int angleDeg = (int) (Math.atan(Math.abs(_setPoint.y) / Math.abs(_setPoint.x)) * 180.0 / Math.PI);
+		if(_setPoint.y>0) {
+			angleDeg *= -1;
 		}
-		if (isRouteFinished()) {
-			log2File("Route is finished, returning nothing");
-			return 0;
-		}
-
-		int _return = _routesCached[_routeCachePointer++];
-		log2File("Return new scheduled route: " + _return + "cm");
-		return _return;
+		
+		log2File("calculated angle: " + angleDeg + "°");
+		return angleDeg;
 	}
 
-	private void calculateRouteSchedule() {
-		log2File("In calculateRouteSchedule()");
-
-		_routesCached = new int[ROUTE_GRANULARITY];
-		_routesCached[0] = (int) _setPoint.x;
-		_routesCached[1] = 0;
-		_routeCachePointer = 0;
-
-		log2File("_routesCached {" + _routesCached[0] + ", " + _routesCached[1]
-				+ "}");
-		ROUTE_GRANULARITY = 2;
-
-		// _routesCached = new int[ROUTE_GRANULARITY];
-		// int temp = (int) (_setPoint.x / 2);
-		// int sum = 0;
-		// int i;
-		// for (i = 0; i < _routesCached.length - 1; i++) {
-		// log2File("in calculateRouteSchedule(), iteration #" + i);
-		// sum += temp;
-		//
-		// log2File("#" + i + ": _routesCached[" + i + "] = " + temp);
-		// _routesCached[i] = temp;
-		// temp /= 2;
-		// if (temp == 0) {
-		// log2File("#" + i + "; breaking because temp=0");
-		// break;
-		// }
-		// }
-		// _routesCached[i] = (int) (_setPoint.x - sum);
-		// log2File("_routesCached[" + i + "] = " + _routesCached[i]);
-		//
-		// ROUTE_GRANULARITY = i + 1;
-		// log2File("calculated Route-Schedule[" + ROUTE_GRANULARITY + "] to: "
-		// + _routesCached);
-		// _routeCachePointer = 0;
+	private int getRoute() {
+		log2File("in getRoute()");
+		return (int) _setPoint.x;
 	}
 
-	/**
-	 * calculates and returns a given amount in [°] using an multiplicative
-	 * increase method
-	 * 
-	 * @return degrees which should be scheduled to the robot to be turned
-	 */
-	private int getNextScheduledAngle() {
-		log2File("in getNextScheduledAngle()");
-		if (_degreesCached == null) {
-			calculateDegreeSchedule();
-		}
-
-		if (isTurnFinished()) {
-			log2File("Turn is finished, returning nothing");
-			return 0;
-		} else {
-			log2File("turn not finished yet");
-		}
-
-		log2File("returning _degreesCached[" + (_degreeCachePointer + 1)
-				+ "]= " + _degreesCached[_degreeCachePointer + 1]);
-		int _return = _degreesCached[_degreeCachePointer++];
-		log2File("Return new scheduled route: " + _return + "°");
-		return _return;
-	}
-
-	/**
-	 * calculates a degree schedule
-	 */
-	private void calculateDegreeSchedule() {
-		log2File("in calculateDegreeSchedule()");
-
-		_degreesCached = new int[DEGREE_GRANULARITY];
-		_degreesCached[0] = (int) (Math.atan(_setPoint.y / _setPoint.x) * 180.0 / Math.PI);
-		_degreesCached[1] = 0;
-		_degreeCachePointer = 0;
-
-		log2File("__degreesCached {" + _degreesCached[0] + ", "
-				+ _degreesCached[1] + "}");
-
-		DEGREE_GRANULARITY = 2;
-
-		// _degreesCached = new int[DEGREE_GRANULARITY];
-		// int temp = (int) (_setPoint.y / 2);
-		// int sum = 0;
-		// int i;
-		// for (i = 0; i < _degreesCached.length - 1; i++) {
-		// log2File("in calculateDegreeSchedule(), iteration #" + i);
-		// sum += temp;
-		//
-		// log2File("#" + i + ": _degreesCached[" + i + "] = " + temp);
-		// _degreesCached[i] = temp;
-		// temp /= 2;
-		// if (temp == 0) {
-		// log2File("#" + i + "; breaking because temp=0");
-		// break;
-		// }
-		// }
-		//
-		// _degreesCached[i] = (int) (_setPoint.y - sum);
-		// log2File("_degreesCached[" + i + "] = " + _degreesCached[i]);
-		//
-		// DEGREE_GRANULARITY = i + 1;
-		// log2File("Number of indices in _degreesCached: " +
-		// DEGREE_GRANULARITY);
-		//
-		// log2File("calculated Turn-Schedule[" + DEGREE_GRANULARITY + "] to: "
-		// + _degreesCached);
-		// _degreeCachePointer = 0;
-	}
+	
 
 	/**
 	 * sets the setPoint to the current value - this does not change the robot
@@ -324,8 +194,6 @@ public class Level1 {
 		if (_fsmState == FsmState.IDLE) {
 			log2File("Doing FSM state transition: IDLE=>TURNING");
 			_fsmState = FsmState.TURNING;
-		} else {
-			log2File("Robot not in IDLE ignoring setSetPoint");
 		}
 	}
 
@@ -335,13 +203,15 @@ public class Level1 {
 	public void reset() {
 		log2File("in reset()");
 
+		log2File("opening grabber");
+		try {
+			_robot.grab(0);
+		} catch (ConnectionLostException e1) {
+		}
+		
 		synchronized (_fsmState) {
 			log2File("resetting _fsmState to IDLE");
 			_fsmState = FsmState.IDLE;
-
-			log2File("setting _degreesCached and _routesCached to null");
-			_degreesCached = null;
-			_routesCached = null;
 		}
 
 		if (_robot != null) {
