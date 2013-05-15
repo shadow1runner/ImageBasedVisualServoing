@@ -44,6 +44,8 @@ import at.ac.uibk.cs.auis.ImageBasedVisualServoing.Calibration.CalibrationActivi
 import at.ac.uibk.cs.auis.ImageBasedVisualServoing.Calibration.CalibrationChessboardActivity;
 import at.ac.uibk.cs.auis.ImageBasedVisualServoing.Common.CalibrationHelper;
 import at.ac.uibk.cs.auis.ImageBasedVisualServoing.Common.DrawHelper;
+import at.ac.uibk.cs.auis.ImageBasedVisualServoing.Common.NavigationCalibrationHelper;
+import at.ac.uibk.cs.auis.ImageBasedVisualServoing.Navigation.NavigationCalibrationActivity;
 import at.ac.uibk.cs.auis.ImageBasedVisualServoing.Robot.Robot;
 import at.ac.uibk.cs.auis.ImageBasedVisualServoing.Robot.SubsumptionArchiteture.Level1;
 import at.ac.uibk.cs.auis.Tracker.ColorBasedTracker;
@@ -70,11 +72,13 @@ public class ImageBasedVisualServoingActivity extends IOIOActivity implements
 	private MenuItem CreateCalibrationChessboardMenuItem;
 	private MenuItem SerializeCalibrationMenuItem;
 	private MenuItem LoadCalibrationMenuItem;
+	private MenuItem CalibrteWorldMenuItem;
 
 	private ColorBasedTracker colorBasedTracker = new ColorBasedTracker();
 	private TrackerHelper trackerHelper = new TrackerHelper();
 
 	private CalibrationHelper calibrationHelper;
+	private NavigationCalibrationHelper navigationCalibrationHelper;
 
 	private static final Scalar INDICATING_COLOR = new Scalar(0xbf, 0xfe, 0x00,
 			0x00);
@@ -99,6 +103,8 @@ public class ImageBasedVisualServoingActivity extends IOIOActivity implements
 		}
 	};
 
+	private NavigationCalibrationHelper navigationCalibrationActivity;
+
 	// ------------------------------------------ ANDROID LIFECYLCE
 	// ------------------------------------------
 
@@ -108,53 +114,6 @@ public class ImageBasedVisualServoingActivity extends IOIOActivity implements
 		Log.i(TAG, "called onCreate");
 		super.onCreate(savedInstanceState);
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-
-		// Log.i(TAG, "calling logcat-activity");
-		// Intent logCatIntent = new
-		// Intent(ImageBasedVisualServoingActivity.this, LoggingActivity.class);
-		// startActivity(logCatIntent);
-		// new Thread(new Runnable() {
-		//
-		// @Override
-		// public void run() {
-		// try {
-		// boolean append = false;
-		//
-		// while (true) {
-		// Process process = Runtime.getRuntime()
-		// .exec("logcat -d");
-		// BufferedReader bufferedReader = new BufferedReader(
-		// new InputStreamReader(process.getInputStream()));
-		//
-		// String line;
-		//
-		// File root = Environment.getExternalStorageDirectory();
-		// File file = new File(root, "tomato50.txt");
-		// FileWriter filewriter = new FileWriter(file, append);
-		// if (append = false)
-		// append = true;
-		// BufferedWriter bufferedWriter = new BufferedWriter(
-		// filewriter);
-		// DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
-		//
-		// while ((line = bufferedReader.readLine()) != null) {
-		// Date date = new Date();
-		// bufferedWriter.write(dateFormat.format(date) + " " + line
-		// +"\r\n\r\n");
-		// bufferedWriter.flush();
-		// }
-		// bufferedWriter.close();
-		// filewriter.close();
-		//
-		// Log.e(TAG, "logfile closed");
-		// }
-		//
-		// } catch (IOException e) {
-		// }
-		// }
-		// }).start();
-		//
-		// Log.i(TAG, "after calling logcat-activity");
 
 		setContentView(R.layout.image_based_visual_servoing_view);
 		
@@ -183,32 +142,27 @@ public class ImageBasedVisualServoingActivity extends IOIOActivity implements
 
 		Bundle b = getIntent().getExtras();
 		if (b == null) {
-			Log.e(TAG,
-					"unable to get CalibrationHelper from intent-invocation, exiting");
-			// Intent intent = new Intent(Intent.ACTION_MAIN);
-			// intent.addCategory(Intent.CATEGORY_HOME);
-			// intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-			// startActivity(intent);
-			// finish();
+			Log.e(TAG, "unable to get CalibrationHelper from intent-invocation, exiting");
 		}
 
 		Log.i(TAG,
 				"trying to get a CalibrationHelper passed as argument on intent-invocation");
 		Intent i = getIntent();
-		calibrationHelper = (CalibrationHelper) i
-				.getParcelableExtra("calibrationHelper");
+		calibrationHelper = (CalibrationHelper) i.getParcelableExtra("calibrationHelper");
 		if (calibrationHelper == null) {
-			Log.e(TAG, "unable to get calibrationHelper by unparceling");
-			
-//			DeSerializeCalibration();
-//			if(calibrationHelper==null) {
-//				Log.e(TAG, "unable to get calibrationHelper by deserialization");
-//			} else {
-//				Log.e(TAG, "Got calibrationHelper successfully by deserialization");
-//			}
+			Log.i(TAG, "unable to get calibrationHelper by unparceling");
 		}
 		else
-			Log.e(TAG, "Got calibrationHelper successfully by unparceling");
+			Log.i(TAG, "Got calibrationHelper successfully by unparceling");
+		
+		navigationCalibrationActivity = (NavigationCalibrationHelper) i.getParcelableExtra("navigationCalibrationHelper");
+		if (navigationCalibrationHelper == null) {
+			Log.i(TAG, "unable to get navigationCalibrationHelper by unparceling");
+		}
+		else {
+			Log.i(TAG, "Got navigationCalibrationHelper successfully by unparceling");
+			Toast.makeText(this.getApplicationContext(), "got navigationCalibrationHelper", Toast.LENGTH_LONG);
+		}
 
 	}
 
@@ -240,11 +194,10 @@ public class ImageBasedVisualServoingActivity extends IOIOActivity implements
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		CreateCalibrationMenuItem = menu.add("Calibrate");
-		CreateCalibrationChessboardMenuItem = menu
-				.add("Calibrate with chessboard");
-		SerializeCalibrationMenuItem = menu
-				.add("Serialize current calibration");
+		CreateCalibrationChessboardMenuItem = menu.add("Calibrate with chessboard");
+		SerializeCalibrationMenuItem = menu.add("Serialize current calibration");
 		LoadCalibrationMenuItem = menu.add("Load current calibration");
+		CalibrteWorldMenuItem = menu.add("Calibrate World");
 		return true;
 	}
 
@@ -271,6 +224,12 @@ public class ImageBasedVisualServoingActivity extends IOIOActivity implements
 		} else if (item == LoadCalibrationMenuItem) {
 			Log.i(TAG, "LoadCalibrationMenuItem has been clicked");
 			DeSerializeCalibration();
+		} else if (item == CalibrteWorldMenuItem) {
+			Log.i(TAG, "CalibrteWorldMenuItem has been clicked, invoking calibrate world intent");
+			Intent calibrateIntent = new Intent(
+					ImageBasedVisualServoingActivity.this,
+					NavigationCalibrationActivity.class);
+			startActivity(calibrateIntent);
 		} else {
 			Log.e(TAG,
 					"Invalid MenuItem has been clicked, quitting to home screen");

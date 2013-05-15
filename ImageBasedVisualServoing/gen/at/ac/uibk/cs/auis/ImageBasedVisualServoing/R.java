@@ -40,28 +40,29 @@ containing a value of this type.
         public static final int icon=0x7f020000;
     }
     public static final class id {
-        public static final int CalibrateChessboardCorners=0x7f040004;
-        public static final int CalibrationBackButton=0x7f04000a;
+        public static final int CalibrateChessboardCorners=0x7f040007;
+        public static final int CalibrationBackButton=0x7f040004;
         public static final int CalibrationLabel=0x7f040003;
-        public static final int CalibrationNextButton=0x7f04000b;
-        public static final int JavaCameraView=0x7f040005;
+        public static final int CalibrationNextButton=0x7f040005;
+        public static final int JavaCameraView=0x7f040008;
         public static final int ResetFsmsButton=0x7f04000d;
         public static final int TextView=0x7f04000e;
-        public static final int acceptCalibration=0x7f040009;
+        public static final int acceptCalibration=0x7f04000c;
         public static final int any=0x7f040000;
         public static final int back=0x7f040001;
         public static final int camera_view=0x7f04000f;
-        public static final int color_based_tracking_surface_view=0x7f04000c;
+        public static final int color_based_tracking_surface_view=0x7f040006;
         public static final int front=0x7f040002;
-        public static final int linearLayoutSummary=0x7f040006;
-        public static final int restartCalibration=0x7f040008;
-        public static final int summaryHeader=0x7f040007;
+        public static final int linearLayoutSummary=0x7f040009;
+        public static final int restartCalibration=0x7f04000b;
+        public static final int summaryHeader=0x7f04000a;
     }
     public static final class layout {
-        public static final int calibration_chessboard_view=0x7f030000;
-        public static final int calibration_summary_view=0x7f030001;
-        public static final int calibration_wizard_view=0x7f030002;
-        public static final int image_based_visual_servoing_view=0x7f030003;
+        public static final int beacon_wizard_view=0x7f030000;
+        public static final int calibration_chessboard_view=0x7f030001;
+        public static final int calibration_summary_view=0x7f030002;
+        public static final int calibration_wizard_view=0x7f030003;
+        public static final int image_based_visual_servoing_view=0x7f030004;
     }
     public static final class string {
         public static final int CalibrateChessboardCornersText=0x7f050004;
