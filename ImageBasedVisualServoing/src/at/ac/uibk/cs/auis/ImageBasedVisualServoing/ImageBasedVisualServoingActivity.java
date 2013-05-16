@@ -225,7 +225,7 @@ public class ImageBasedVisualServoingActivity extends IOIOActivity implements
 			Log.i(TAG, "LoadCalibrationMenuItem has been clicked");
 			DeSerializeCalibration();
 		} else if (item == CalibrteWorldMenuItem) {
-			Log.i(TAG, "CalibrteWorldMenuItem has been clicked, invoking calibrate world intent");
+			Log.i(TAG, "CalibrateWorldMenuItem has been clicked, invoking calibrate world intent");
 			Intent calibrateIntent = new Intent(
 					ImageBasedVisualServoingActivity.this,
 					NavigationCalibrationActivity.class);

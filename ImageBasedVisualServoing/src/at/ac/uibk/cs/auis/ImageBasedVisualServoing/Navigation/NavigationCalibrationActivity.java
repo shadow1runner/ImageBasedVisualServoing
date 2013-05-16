@@ -30,6 +30,7 @@ import at.ac.uibk.cs.auis.ImageBasedVisualServoing.R;
 import at.ac.uibk.cs.auis.ImageBasedVisualServoing.Calibration.CalibrationSummaryActivity;
 import at.ac.uibk.cs.auis.ImageBasedVisualServoing.Common.CalibrationHelper;
 import at.ac.uibk.cs.auis.ImageBasedVisualServoing.Common.DrawHelper;
+import at.ac.uibk.cs.auis.ImageBasedVisualServoing.Common.NavigationCalibrationHelper;
 import at.ac.uibk.cs.auis.Tracker.ColorBasedTracker;
 import at.ac.uibk.cs.auis.Tracker.TrackerHelper;
 
@@ -54,7 +55,7 @@ public class NavigationCalibrationActivity extends Activity implements
 	// controller elements
 	private ColorBasedTracker colorBasedTracker = new ColorBasedTracker();
 	private TrackerHelper trackerHelper = new TrackerHelper();
-	private CalibrationHelper calibrationHelper;
+	private NavigationCalibrationHelper calibrationHelper;
 	private States state = States.GatherFirstBeacon;
 	private Point beaconLowestPoint;
 	private boolean isTrackingColorSet = false;
@@ -79,7 +80,7 @@ public class NavigationCalibrationActivity extends Activity implements
 		worldCoordinates.add(new Point(150, 150));
 		worldCoordinates.add(new Point(0, 150));
 		
-		calibrationHelper = new CalibrationHelper(worldCoordinates);
+		calibrationHelper = new NavigationCalibrationHelper(worldCoordinates);
 	}
 
 	private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
@@ -108,7 +109,7 @@ public class NavigationCalibrationActivity extends Activity implements
 		super.onCreate(savedInstanceState);
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 		
-		setContentView(R.layout.beacon_wizard_view);
+		setContentView(R.layout.calibration_wizard_view);
 		mOpenCvCameraView = (CameraBridgeViewBase) findViewById(R.id.color_based_tracking_surface_view);
 		mOpenCvCameraView.setVisibility(SurfaceView.VISIBLE);
 		mOpenCvCameraView.setCvCameraViewListener(this);
