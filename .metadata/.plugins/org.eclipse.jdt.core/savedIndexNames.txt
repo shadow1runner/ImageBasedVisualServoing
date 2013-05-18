@@ -1,1 +1,0 @@
-INDEX VERSION 1.126+D:\Helmut Wolf\Skydrive\Studium\Einführung in autonome und intelligente Systeme\PS\4.)ImageBasedVisualServoing\.metadata\.plugins\org.eclipse.jdt.core
