@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.opencv.calib3d.Calib3d;
+import org.opencv.core.Core;
+import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.Point;
@@ -101,6 +103,28 @@ public class CalibrationHelper implements Parcelable, Serializable {
 		
 		//_cachedImagePlane2WorldCoordinates = worldCorrdinates2imagePlaneCoordinates.inv();
 		_cachedImagePlane2WorldCoordinates = worldCorrdinates2imagePlaneCoordinates;
+	}
+	
+	public Point calculateGroundPlaneCoordinates(Point imagePlaneCoordinates) {
+
+		Mat imagePlane2WorldCoordinates = getHomogenousMat();
+
+		// get homogeneous coordinates out of supplied imagePlaneCoordinates
+		Mat mat3 = new Mat(3, 1, CvType.CV_64FC1);
+		mat3.put(0, 0, new double[] { imagePlaneCoordinates.x, imagePlaneCoordinates.y, 1.0f });
+
+		Mat dest = new Mat(3, 1, CvType.CV_64FC1);
+		// 3*3*CV_64FC1 x 3*1*CV_64FC1 -> 3*1*CV_64FC1
+
+		// see
+		// http://stackoverflow.com/questions/10168058/basic-matrix-multiplication-in-opencv-for-android
+		// Core.multiply(imagePlane2WorldCoordinates, mat3, dest);
+		Core.gemm(imagePlane2WorldCoordinates, mat3, 1, new Mat(), 0, dest, 0);
+		return new Point(dest.get(0, 0)[0] / dest.get(2, 0)[0],
+				dest.get(1, 0)[0] / dest.get(2, 0)[0]); // convert into
+														// homogeneous
+														// coordinate with form
+														// (x,y,1)
 	}
 
 	/********************** Parceling **********************/

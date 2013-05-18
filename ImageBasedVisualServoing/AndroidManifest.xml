@@ -55,6 +55,11 @@
             android:name=".Navigation.NavigationCalibrationActivity"
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="landscape" />
+        <activity
+            android:name=".Navigation.NavigationCalibrationSummaryActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="landscape" />
+        
     </application>
 
     <uses-sdk android:minSdkVersion="8" />

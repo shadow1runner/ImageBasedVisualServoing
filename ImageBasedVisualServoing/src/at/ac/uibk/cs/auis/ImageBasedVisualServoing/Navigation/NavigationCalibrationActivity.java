@@ -280,9 +280,9 @@ public class NavigationCalibrationActivity extends Activity implements
 			break;
 		case DisplaySummary:			
 			// http://stackoverflow.com/questions/3913592/start-an-activity-with-a-parameter
-			Intent intent = new Intent(NavigationCalibrationActivity.this, NavigationCalibrationSummaryActivity.class);
+			Intent intent = new Intent(this, NavigationCalibrationSummaryActivity.class);
 			Bundle b = new Bundle();
-			b.putParcelable("calibrationHelper", calibrationHelper);
+			b.putParcelable("calibrationNavigationHelper", calibrationHelper);
 			intent.putExtras(b); //Put your id to your next Intent
 			startActivity(intent);
 			finish();

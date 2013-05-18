@@ -155,7 +155,7 @@ public class ImageBasedVisualServoingActivity extends IOIOActivity implements
 		else
 			Log.i(TAG, "Got calibrationHelper successfully by unparceling");
 		
-		navigationCalibrationActivity = (NavigationCalibrationHelper) i.getParcelableExtra("navigationCalibrationHelper");
+		navigationCalibrationHelper = (NavigationCalibrationHelper) i.getParcelableExtra("navigationCalibrationHelper");
 		if (navigationCalibrationHelper == null) {
 			Log.i(TAG, "unable to get navigationCalibrationHelper by unparceling");
 		}
@@ -315,7 +315,7 @@ public class ImageBasedVisualServoingActivity extends IOIOActivity implements
 				for (Point point : lowestPoints) {
 					rgba = DrawHelper.drawPoint(rgba, point, new Scalar(0xFF, 0x00,0x00, 0x00));
 					if(calibrationHelper!=null) {
-						Point groundPlane = calculateGroundPlaneCoordinates(point);
+						Point groundPlane = calibrationHelper.calculateGroundPlaneCoordinates(point);
 						
 						Log.i(TAG, "Ground plane coordinates: (" + groundPlane.x + ", " + groundPlane.y + ")");
 						
@@ -408,76 +408,44 @@ public class ImageBasedVisualServoingActivity extends IOIOActivity implements
 
 	@Override
 	public boolean onTouch(View v, MotionEvent event) {
-		if(calibrationHelper==null) {
-			Log.i(TAG, "calibrationhelper is null, user has to calibrate first, cancelling onTouch");
-			//_textView.setText("calibrationhelper is null, plz calibrate first");
-			Toast.makeText(this.getApplicationContext(), "calibrationhelper is null, plz calibrate first", Toast.LENGTH_LONG).show();
-			return false;
-		} else {
-			//_textView.setText("Reset FSMs");
+		if(navigationCalibrationHelper!=null) {
+			if(calibrationHelper==null) {
+				Log.d(TAG, "trying to get CalibrationHelper by deserializing");
+				DeSerializeCalibration();
+			}
+				
+			navigationCalibrationActivity.setCalibrationHelper(calibrationHelper);
+			Point setPoint = navigationCalibrationHelper.getWorldGroundPlaneCoordinates();
 		}
-		
-		int cols = hsv.cols();
-		int rows = hsv.rows();
-
-		int xOffset = (mOpenCvCameraView.getWidth() - cols) / 2;
-		int yOffset = (mOpenCvCameraView.getHeight() - rows) / 2;
-
-		int x = (int) event.getX() - xOffset;
-		int y = (int) event.getY() - yOffset;
-
-		Log.i(TAG, "Touch image coordinates: (" + x + ", " + y + ")");
-
-		if ((x < 0) || (y < 0) || (x > cols) || (y > rows))
-			return false;
-
-		colorBasedTracker.setColorForTrackingHSV(trackerHelper
-				.calcColorForTracking(hsv, new Point(x, y)));
-		isTrackingColorSet = true;
-
-//		try {
-			Log.d(TAG, "Triggering _level1.setSetPoint(new Point((int)groundPlane.x,(int)groundPlane.y));");
-			//_robot.rotate(30);
-			//_robot.move(50);
-			//_level1.setSetPoint(new Point(30,40));
-			//_level1.setSetPoint(new Point((int)groundPlane.x,(int)groundPlane.y));
+		else {
+			if(calibrationHelper==null) {
+				Log.i(TAG, "calibrationhelper is null, user has to calibrate first, cancelling onTouch");
+				//_textView.setText("calibrationhelper is null, plz calibrate first");
+				Toast.makeText(this.getApplicationContext(), "calibrationhelper is null, plz calibrate first", Toast.LENGTH_LONG).show();
+				return false;
+			} else {
+				//_textView.setText("Reset FSMs");
+			}
 			
-//		} catch (ConnectionLostException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (InterruptedException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
+			int cols = hsv.cols();
+			int rows = hsv.rows();
+	
+			int xOffset = (mOpenCvCameraView.getWidth() - cols) / 2;
+			int yOffset = (mOpenCvCameraView.getHeight() - rows) / 2;
+	
+			int x = (int) event.getX() - xOffset;
+			int y = (int) event.getY() - yOffset;
+	
+			Log.i(TAG, "Touch image coordinates: (" + x + ", " + y + ")");
+	
+			if ((x < 0) || (y < 0) || (x > cols) || (y > rows))
+				return false;
+	
+			colorBasedTracker.setColorForTrackingHSV(trackerHelper
+					.calcColorForTracking(hsv, new Point(x, y)));
+			isTrackingColorSet = true;
+		}
 
 		return true;
 	}
-
-	private Point calculateGroundPlaneCoordinates(Point imagePlaneCoordinates) {
-		// Point groundPlane = new Point();
-		// Mat imagePlane = new Mat();
-		// imagePlane.
-		// groundPlane = projectiveMatrix.mul();
-
-		Mat imagePlane2WorldCoordinates = calibrationHelper.getHomogenousMat();
-
-		// get homogeneous coordinates out of supplied imagePlaneCoordinates
-		Mat mat3 = new Mat(3, 1, CvType.CV_64FC1);
-		mat3.put(0, 0, new double[] { imagePlaneCoordinates.x,
-				imagePlaneCoordinates.y, 1.0f });
-
-		Mat dest = new Mat(3, 1, CvType.CV_64FC1);
-		// 3*3*CV_64FC1 x 3*1*CV_64FC1 -> 3*1*CV_64FC1
-
-		// see
-		// http://stackoverflow.com/questions/10168058/basic-matrix-multiplication-in-opencv-for-android
-		// Core.multiply(imagePlane2WorldCoordinates, mat3, dest);
-		Core.gemm(imagePlane2WorldCoordinates, mat3, 1, new Mat(), 0, dest, 0);
-		return new Point(dest.get(0, 0)[0] / dest.get(2, 0)[0],
-				dest.get(1, 0)[0] / dest.get(2, 0)[0]); // convert into
-														// homogeneous
-														// coordinate with form
-														// (x,y,1)
-	}
-
 }

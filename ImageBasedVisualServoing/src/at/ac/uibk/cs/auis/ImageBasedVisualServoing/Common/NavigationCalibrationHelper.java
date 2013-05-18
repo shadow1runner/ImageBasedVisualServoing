@@ -18,9 +18,11 @@ public class NavigationCalibrationHelper implements Parcelable, Serializable {
 	private static final long serialVersionUID = 4529667799485429110L;
 
 	private ArrayList<ParcelablePoint> _imagePlaneCoordinates = new ArrayList<ParcelablePoint>();
-	private ArrayList<ParcelableScalar> _beaconColors;
+	private ArrayList<ParcelableScalar> _beaconColors = new ArrayList<ParcelableScalar>();
 	
 	private MatOfPoint2f _worldCoordinates;
+	
+	private CalibrationHelper _calibrationHelper;
 
 
 	public NavigationCalibrationHelper(MatOfPoint2f worldCoordinates) {
@@ -75,6 +77,40 @@ public class NavigationCalibrationHelper implements Parcelable, Serializable {
 
 	public String PointToString(Point point) {
 		return "(" + point.x + ", " + point.y + ")";
+	}
+	
+	public void setCalibrationHelper(CalibrationHelper calibrationHelper) {
+		_calibrationHelper = calibrationHelper;
+	}
+	
+	public Point getWorldGroundPlaneCoordinates() {
+		Point zeroWorld = getWorldCoordinates(0);
+		Point oneWorld = getWorldCoordinates(1);
+		assert(zeroWorld.x==0.0 && zeroWorld.y==0.0); // the very first point should always be at (0,0)
+		
+		Point zeroImage = _imagePlaneCoordinates.get(0);
+		Point oneImage = _imagePlaneCoordinates.get(1);
+		
+		if(_calibrationHelper==null)
+			throw new RuntimeException("_calibrationhelper must not be null");
+		
+		Point zeroEgocentricWorld = _calibrationHelper.calculateGroundPlaneCoordinates(zeroImage);
+		Point oneEgocentricWorld = _calibrationHelper.calculateGroundPlaneCoordinates(oneImage);
+		
+		double r0 = pythagoras(zeroEgocentricWorld.x, zeroEgocentricWorld.y);
+		double r1 = pythagoras(oneEgocentricWorld.x, oneEgocentricWorld.y);
+		
+		double d01 = pythagoras((oneWorld.x-zeroWorld.x), (oneWorld.y-zeroWorld.y));
+		
+		double y = (r0*r0 - r1*r1 + d01*d01)/(2*d01);
+		
+		double x = Math.sqrt(r0*r0-y*y);
+		
+		return new Point(x,y);
+	}
+
+	private double pythagoras(double x, double y) {
+		return Math.sqrt(x*x + y*y);
 	}
 
 	/********************** Parceling **********************/

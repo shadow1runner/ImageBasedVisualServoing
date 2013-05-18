@@ -55,7 +55,7 @@ public class NavigationCalibrationSummaryActivity extends Activity {
 		}
 		
 		Intent intent = getIntent();
-		calibrationHelper = (NavigationCalibrationHelper) intent.getParcelableExtra("calibrationHelper");
+		calibrationHelper = (NavigationCalibrationHelper) intent.getParcelableExtra("calibrationNavigationHelper");
 		
 		linearLayoutSummary = (LinearLayout) findViewById(R.id.linearLayoutSummary);
 		

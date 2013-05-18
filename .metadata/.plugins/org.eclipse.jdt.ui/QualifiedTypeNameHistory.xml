@@ -1,11 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <qualifiedTypeNameHistroy>
+<fullyQualifiedTypeName name="java.lang.Integer"/>
+<fullyQualifiedTypeName name="org.opencv.core.Scalar"/>
+<fullyQualifiedTypeName name="at.ac.uibk.cs.auis.ImageBasedVisualServoing.Common.DrawHelper"/>
+<fullyQualifiedTypeName name="org.opencv.imgproc.Imgproc"/>
+<fullyQualifiedTypeName name="org.opencv.core.Size"/>
 <fullyQualifiedTypeName name="org.opencv.core.TermCriteria"/>
 <fullyQualifiedTypeName name="android.widget.LinearLayout"/>
 <fullyQualifiedTypeName name="org.opencv.calib3d.Calib3d"/>
 <fullyQualifiedTypeName name="org.opencv.core.MatOfPoint2f"/>
 <fullyQualifiedTypeName name="at.ac.uibk.cs.auis.ImageBasedVisualServoing.Calibration.CalibrationActivity"/>
 <fullyQualifiedTypeName name="at.ac.uibk.cs.auis.ImageBasedVisualServoing.Common.CalibrationHelper"/>
+<fullyQualifiedTypeName name="java.util.ArrayList"/>
 <fullyQualifiedTypeName name="at.ac.uibk.cs.auis.ImageBasedVisualServoing.Calibration.CalibrationChessboardActivity"/>
 <fullyQualifiedTypeName name="at.ac.uibk.cs.auis.ImageBasedVisualServoing.Common.ParcelablePoint"/>
 <fullyQualifiedTypeName name="ioio.lib.util.android.IOIOActivity"/>
@@ -28,6 +34,7 @@
 <fullyQualifiedTypeName name="at.ac.uibk.cs.auis.ImageBasedVisualServoing.Robot.Tests.Level1Tests"/>
 <fullyQualifiedTypeName name="org.opencv.core.Point"/>
 <fullyQualifiedTypeName name="org.junit.Assert"/>
+<fullyQualifiedTypeName name="at.ac.uibk.cs.auis.ImageBasedVisualServoing.Robot.SubsumptionArchiteture.Level1.FsmState"/>
 <fullyQualifiedTypeName name="java.io.IOException"/>
 <fullyQualifiedTypeName name="java.io.BufferedReader"/>
 <fullyQualifiedTypeName name="java.io.InputStreamReader"/>
@@ -53,11 +60,4 @@
 <fullyQualifiedTypeName name="android.widget.Toast"/>
 <fullyQualifiedTypeName name="java.lang.String"/>
 <fullyQualifiedTypeName name="java.lang.Math"/>
-<fullyQualifiedTypeName name="at.ac.uibk.cs.auis.ImageBasedVisualServoing.Robot.SubsumptionArchiteture.Level1.FsmState"/>
-<fullyQualifiedTypeName name="at.ac.uibk.cs.auis.ImageBasedVisualServoing.Calibration.CalibrationSummaryActivity"/>
-<fullyQualifiedTypeName name="org.opencv.core.Scalar"/>
-<fullyQualifiedTypeName name="java.util.ArrayList"/>
-<fullyQualifiedTypeName name="at.ac.uibk.cs.auis.ImageBasedVisualServoing.Common.ParcelableScalar"/>
-<fullyQualifiedTypeName name="at.ac.uibk.cs.auis.ImageBasedVisualServoing.Navigation.NavigationCalibrationActivity"/>
-<fullyQualifiedTypeName name="at.ac.uibk.cs.auis.ImageBasedVisualServoing.Common.NavigationCalibrationHelper"/>
 </qualifiedTypeNameHistroy>
