@@ -74,7 +74,8 @@ public class NavigationCalibrationActivity extends Activity implements
 		// started from (0,0) each beacon is enumerated counterclockwise (CCW)
 		List<Point> worldCoordinates = new ArrayList<Point>();
 		worldCoordinates.add(new Point(0, 0));
-		worldCoordinates.add(new Point(150, 0));
+		//worldCoordinates.add(new Point(150, 0));
+		worldCoordinates.add(new Point(100, 0));
 		worldCoordinates.add(new Point(300, 0));
 		worldCoordinates.add(new Point(300, 150));
 		worldCoordinates.add(new Point(150, 150));

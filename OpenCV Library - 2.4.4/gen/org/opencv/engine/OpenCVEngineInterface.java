@@ -1,6 +1,6 @@
 /*
  * This file is auto-generated.  DO NOT MODIFY.
- * Original file: D:\\Helmut Wolf\\Skydrive\\Studium\\Einführung in autonome und intelligente Systeme\\PS\\4.)ImageBasedVisualServoing\\OpenCV Library - 2.4.4\\src\\org\\opencv\\engine\\OpenCVEngineInterface.aidl
+ * Original file: C:\\dev\\Android\\git\\ImageBasedVisualServoing\\OpenCV Library - 2.4.4\\src\\org\\opencv\\engine\\OpenCVEngineInterface.aidl
  */
 package org.opencv.engine;
 /**

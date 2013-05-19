@@ -414,8 +414,9 @@ public class ImageBasedVisualServoingActivity extends IOIOActivity implements
 				DeSerializeCalibration();
 			}
 				
-			navigationCalibrationActivity.setCalibrationHelper(calibrationHelper);
+			navigationCalibrationHelper.setCalibrationHelper(calibrationHelper);
 			Point setPoint = navigationCalibrationHelper.getWorldGroundPlaneCoordinates();
+			Log.d(TAG, "robot is at " + setPoint);
 		}
 		else {
 			if(calibrationHelper==null) {

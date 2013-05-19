@@ -84,8 +84,8 @@ public class NavigationCalibrationHelper implements Parcelable, Serializable {
 	}
 	
 	public Point getWorldGroundPlaneCoordinates() {
-		Point zeroWorld = getWorldCoordinates(0);
-		Point oneWorld = getWorldCoordinates(1);
+		Point zeroWorld = getWorldCoordinates(1);
+		Point oneWorld = getWorldCoordinates(2);
 		assert(zeroWorld.x==0.0 && zeroWorld.y==0.0); // the very first point should always be at (0,0)
 		
 		Point zeroImage = _imagePlaneCoordinates.get(0);
