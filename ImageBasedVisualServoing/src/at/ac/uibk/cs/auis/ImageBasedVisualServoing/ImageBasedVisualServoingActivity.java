@@ -46,6 +46,7 @@ import at.ac.uibk.cs.auis.ImageBasedVisualServoing.Common.CalibrationHelper;
 import at.ac.uibk.cs.auis.ImageBasedVisualServoing.Common.DrawHelper;
 import at.ac.uibk.cs.auis.ImageBasedVisualServoing.Common.NavigationCalibrationHelper;
 import at.ac.uibk.cs.auis.ImageBasedVisualServoing.Navigation.NavigationCalibrationActivity;
+import at.ac.uibk.cs.auis.ImageBasedVisualServoing.Navigation.NavigationConstants;
 import at.ac.uibk.cs.auis.ImageBasedVisualServoing.Robot.Robot;
 import at.ac.uibk.cs.auis.ImageBasedVisualServoing.Robot.SubsumptionArchiteture.Level1;
 import at.ac.uibk.cs.auis.Tracker.ColorBasedTracker;
@@ -416,6 +417,9 @@ public class ImageBasedVisualServoingActivity extends IOIOActivity implements
 				
 			navigationCalibrationHelper.setCalibrationHelper(calibrationHelper);
 			Point setPoint = navigationCalibrationHelper.getWorldGroundPlaneCoordinates();
+			
+			moveToGoal(setPoint);
+			
 			Log.d(TAG, "robot is at " + setPoint);
 		}
 		else {
@@ -448,5 +452,22 @@ public class ImageBasedVisualServoingActivity extends IOIOActivity implements
 		}
 
 		return true;
+	}
+
+	private void moveToGoal(Point setPoint) {
+		double dx = NavigationConstants.GoalLocationWorldCoordinates.x - setPoint.x;
+		double dy = NavigationConstants.GoalLocationWorldCoordinates.y - setPoint.x;
+		
+		double length = Math.sqrt(dx*dx + dy*dy);
+		double angle = Math.atan2(dy, dx);
+		
+		// if we are in the 4th quadrant we have to move 90° (=pi/4) further
+		if(NavigationConstants.GoalLocationWorldCoordinates.y>setPoint.y && NavigationConstants.GoalLocationWorldCoordinates.x>setPoint.x) {
+			angle += Math.PI/4;
+		} else if(NavigationConstants.GoalLocationWorldCoordinates.y>setPoint.y && NavigationConstants.GoalLocationWorldCoordinates.x<setPoint.x) { // if we are in the 3rd quadrant we have to move 180° (=pi/2) further
+			angle += Math.PI/2;
+		}
+		
+		_level1.s
 	}
 }
