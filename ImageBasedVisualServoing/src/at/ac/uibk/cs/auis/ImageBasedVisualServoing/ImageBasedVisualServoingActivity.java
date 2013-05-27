@@ -456,18 +456,35 @@ public class ImageBasedVisualServoingActivity extends IOIOActivity implements
 
 	private void moveToGoal(Point setPoint) {
 		double dx = NavigationConstants.GoalLocationWorldCoordinates.x - setPoint.x;
-		double dy = NavigationConstants.GoalLocationWorldCoordinates.y - setPoint.x;
+		double dy = NavigationConstants.GoalLocationWorldCoordinates.y - setPoint.y;
 		
 		double length = Math.sqrt(dx*dx + dy*dy);
-		double angle = Math.atan2(dy, dx);
+		double angle = Math.atan2(dx, dy); // notice inversed x and y
 		
-		// if we are in the 4th quadrant we have to move 90° (=pi/4) further
-		if(NavigationConstants.GoalLocationWorldCoordinates.y>setPoint.y && NavigationConstants.GoalLocationWorldCoordinates.x>setPoint.x) {
-			angle += Math.PI/4;
-		} else if(NavigationConstants.GoalLocationWorldCoordinates.y>setPoint.y && NavigationConstants.GoalLocationWorldCoordinates.x<setPoint.x) { // if we are in the 3rd quadrant we have to move 180° (=pi/2) further
+		if(dy>0 && dx<0) { // 1st quadrant
 			angle += Math.PI/2;
+		} else if(dy<0 && dx<0) { // 2nd quadrant
+			angle -= Math.PI/2;
+		} else if(dy<0 && dx>0) { // 3rd quadrant
+			// passt
+		} else if(dy>0 && dx>0) { //4th quadrant
+			angle *= -1;
+			angle -= Math.PI/2;
 		}
 		
-		_level1.s
+		//_level1.s
+		try {
+			_robot.rotate((int)(angle*180/Math.PI));
+
+			Thread.currentThread().sleep(10000); // sleep 10 seconds
+
+			_robot.move((int)length);
+		} catch (ConnectionLostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }
