@@ -4,11 +4,17 @@ import ioio.lib.api.exception.ConnectionLostException;
 import ioio.lib.util.IOIOLooper;
 import ioio.lib.util.android.IOIOActivity;
 
+import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.CameraBridgeViewBase;
@@ -26,6 +32,7 @@ import org.opencv.imgproc.Imgproc;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -85,6 +92,31 @@ public class ImageBasedVisualServoingActivity extends IOIOActivity implements
 			0x00);
 	private boolean isTrackingColorSet = false;
 
+	
+	private static boolean append2File = false;
+
+	private static void log2File(String message) {
+		File root = Environment.getExternalStorageDirectory();
+		File file = new File(root, "ImageBasedVisualServoing.txt");
+		FileWriter filewriter;
+		try {
+			filewriter = new FileWriter(file, append2File);
+			if (append2File == false)
+				append2File = true;
+			BufferedWriter bufferedWriter = new BufferedWriter(filewriter);
+			DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss:SSS");
+
+			Date date = new Date();
+			bufferedWriter.write(dateFormat.format(date) + " by #"
+					+ Thread.currentThread().getId() + ": " + message + "\r\n");
+			bufferedWriter.close();
+			filewriter.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
 	private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
 		@Override
 		public void onManagerConnected(int status) {
@@ -407,6 +439,8 @@ public class ImageBasedVisualServoingActivity extends IOIOActivity implements
 	// ------------------------------------------ SERIALIZATION
 	// ------------------------------------------
 
+	private boolean targetReached=false;
+	
 	@Override
 	public boolean onTouch(View v, MotionEvent event) {
 		if(navigationCalibrationHelper!=null) {
@@ -418,8 +452,10 @@ public class ImageBasedVisualServoingActivity extends IOIOActivity implements
 			navigationCalibrationHelper.setCalibrationHelper(calibrationHelper);
 			Point setPoint = navigationCalibrationHelper.getWorldGroundPlaneCoordinates();
 			
-			moveToGoal(setPoint);
-			
+			if(targetReached==false) {
+				moveToGoal(setPoint);
+				targetReached=true;
+			}
 			Log.d(TAG, "robot is at " + setPoint);
 		}
 		else {
@@ -455,6 +491,8 @@ public class ImageBasedVisualServoingActivity extends IOIOActivity implements
 	}
 
 	private void moveToGoal(Point setPoint) {
+		log2File("in moveToGoal with setPoint: " + setPoint);
+		
 		double dx = NavigationConstants.GoalLocationWorldCoordinates.x - setPoint.x;
 		double dy = NavigationConstants.GoalLocationWorldCoordinates.y - setPoint.y;
 		
@@ -464,13 +502,17 @@ public class ImageBasedVisualServoingActivity extends IOIOActivity implements
 		if(dy>0 && dx<0) { // 1st quadrant
 			angle += Math.PI/2;
 		} else if(dy<0 && dx<0) { // 2nd quadrant
-			angle -= Math.PI/2;
+			angle += Math.PI/2;
+			angle *= -1;
 		} else if(dy<0 && dx>0) { // 3rd quadrant
 			// passt
 		} else if(dy>0 && dx>0) { //4th quadrant
 			angle *= -1;
 			angle -= Math.PI/2;
 		}
+		
+		
+		log2File("moveToGoal: angle=" + angle + "°, length=" + length);
 		
 		//_level1.s
 		try {
