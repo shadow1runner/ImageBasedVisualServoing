@@ -76,11 +76,13 @@ public class NavigationCalibrationActivity extends Activity implements
 		worldCoordinates.add(new Point(0, 0));
 		//worldCoordinates.add(new Point(150, 0));
 		//worldCoordinates.add(new Point(100, 0));
-		worldCoordinates.add(new Point(0, 100));
-		worldCoordinates.add(new Point(0, 300));
-		worldCoordinates.add(new Point(150, 300));
-		worldCoordinates.add(new Point(150, 150));
+		worldCoordinates.add(new Point(0, 75));
+		worldCoordinates.add(new Point(0, 150));
+		worldCoordinates.add(new Point(75, 0));
+		worldCoordinates.add(new Point(75, 150));
 		worldCoordinates.add(new Point(150, 0));
+		worldCoordinates.add(new Point(150, 75));
+		worldCoordinates.add(new Point(150, 150));
 		
 		calibrationHelper = new NavigationCalibrationHelper(worldCoordinates);
 	}

@@ -79,10 +79,15 @@ public class CalibrationActivity extends Activity implements
 	
 	public CalibrationActivity() {
 		List<Point> worldCoordinates = new ArrayList<Point>();
-		worldCoordinates.add(new Point(17.50, 12.5));
+		/*worldCoordinates.add(new Point(17.50, 12.5));
 		worldCoordinates.add(new Point(17.50, 2.50));
 		worldCoordinates.add(new Point(27.50, 2.50));
-		worldCoordinates.add(new Point(27.50, 12.50));
+		worldCoordinates.add(new Point(27.50, 12.50));*/
+		
+		worldCoordinates.add(new Point(100.0, -50.0));
+		worldCoordinates.add(new Point(51.0, -25.0));
+		worldCoordinates.add(new Point(100.0, 0.0));
+		worldCoordinates.add(new Point(51.0, 20.0));		
 		
 		calibrationHelper = new CalibrationHelper(worldCoordinates);
 	}
@@ -177,7 +182,9 @@ public class CalibrationActivity extends Activity implements
 			centerOfMass = null;
 			
 			try {
-				centerOfMass = colorBasedTracker.calcCenterOfMass(mHsv);
+				//centerOfMass = colorBasedTracker.calcCenterOfMass(mHsv);
+				centerOfMass = colorBasedTracker.getLowestBoundOfContours(mHsv, 1)[0]; // 2 beacons SHOULD be in view
+
 			} catch (IllegalArgumentException e) {
 			}
 

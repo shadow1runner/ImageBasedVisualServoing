@@ -478,6 +478,8 @@ public class ImageBasedVisualServoingActivity extends IOIOActivity implements
 			int y = (int) event.getY() - yOffset;
 	
 			Log.i(TAG, "Touch image coordinates: (" + x + ", " + y + ")");
+			
+			Log.i(TAG, "Egocentric world coordinates: " + calibrationHelper.calculateGroundPlaneCoordinates(new Point(x,y)));
 	
 			if ((x < 0) || (y < 0) || (x > cols) || (y > rows))
 				return false;
@@ -497,18 +499,16 @@ public class ImageBasedVisualServoingActivity extends IOIOActivity implements
 		double dy = NavigationConstants.GoalLocationWorldCoordinates.y - setPoint.y;
 		
 		double length = Math.sqrt(dx*dx + dy*dy);
-		double angle = Math.atan2(dx, dy); // notice inversed x and y
+		double angle = Math.atan(Math.abs(dy)/Math.abs(dx)); // notice inversed x and y
 		
 		if(dy>0 && dx<0) { // 1st quadrant
-			angle += Math.PI/2;
+			angle *= -1;
 		} else if(dy<0 && dx<0) { // 2nd quadrant
-			angle += Math.PI/2;
-			angle *= -1;
-		} else if(dy<0 && dx>0) { // 3rd quadrant
 			// passt
+		} else if(dy<0 && dx>0) { // 3rd quadrant
+			angle = Math.PI - angle;
 		} else if(dy>0 && dx>0) { //4th quadrant
-			angle *= -1;
-			angle -= Math.PI/2;
+			angle = angle - Math.PI;
 		}
 		
 		
@@ -518,7 +518,7 @@ public class ImageBasedVisualServoingActivity extends IOIOActivity implements
 		try {
 			_robot.rotate((int)(angle*180/Math.PI));
 
-			Thread.currentThread().sleep(10000); // sleep 10 seconds
+			Thread.currentThread().sleep(3000); // sleep 10 seconds
 
 			_robot.move((int)length);
 		} catch (ConnectionLostException e) {
