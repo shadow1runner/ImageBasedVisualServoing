@@ -85,9 +85,9 @@ public class CalibrationActivity extends Activity implements
 		worldCoordinates.add(new Point(27.50, 12.50));*/
 		
 		worldCoordinates.add(new Point(100.0, -50.0));
-		worldCoordinates.add(new Point(51.0, -25.0));
+		worldCoordinates.add(new Point(50.0, -25.0));
 		worldCoordinates.add(new Point(100.0, 0.0));
-		worldCoordinates.add(new Point(51.0, 20.0));		
+		worldCoordinates.add(new Point(50.0, 20.0));		
 		
 		calibrationHelper = new CalibrationHelper(worldCoordinates);
 	}
