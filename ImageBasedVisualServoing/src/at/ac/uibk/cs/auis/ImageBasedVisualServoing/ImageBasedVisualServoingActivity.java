@@ -512,15 +512,17 @@ public class ImageBasedVisualServoingActivity extends IOIOActivity implements
 		}
 		
 		
-		log2File("moveToGoal: angle=" + angle + "°, length=" + length);
+		log2File("[original] moveToGoal: angle=" + (int)Math.round(angle*180/Math.PI) + "°, length=" + length);
+		
+		log2File("[hacked] moveToGoal: angle=" + (int)Math.round((int)Math.round(angle*180/Math.PI)*1.0567) + "°, length=" + length*1.14596);
 		
 		//_level1.s
 		try {
-			_robot.rotate((int)(angle*180/Math.PI));
+			_robot.rotate((int)Math.round((int)Math.round(angle*180/Math.PI)*1.0567));
 
-			Thread.currentThread().sleep(3000); // sleep 10 seconds
+			Thread.currentThread().sleep(3000); // sleep before turning
 
-			_robot.move((int)length);
+			_robot.move((int)Math.round(length*1.14596)); // empirical correcture value
 		} catch (ConnectionLostException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
